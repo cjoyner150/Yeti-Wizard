@@ -1082,7 +1082,7 @@
     "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
     "m_ObjectId": "014d1fbcd0cf4f4781a1a2d484fb78d9",
     "m_Id": 0,
-    "m_DisplayName": "Float",
+    "m_DisplayName": "Snow Opacity",
     "m_SlotType": 1,
     "m_Hidden": false,
     "m_ShaderOutputName": "Out",
@@ -3892,7 +3892,7 @@
     "m_Title": "Snow",
     "m_Position": {
         "x": -7261.0,
-        "y": 208.0
+        "y": 208.00018310546876
     }
 }
 
@@ -5575,8 +5575,8 @@
     "m_ObjectId": "b15a04e23a6a460b8a32959d87936637",
     "m_Title": "Cel Shader",
     "m_Position": {
-        "x": -2422.999755859375,
-        "y": -214.99998474121095
+        "x": -2423.0,
+        "y": -215.0
     }
 }
 

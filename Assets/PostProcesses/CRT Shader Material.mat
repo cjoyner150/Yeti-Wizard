@@ -117,9 +117,9 @@ Material:
     - _Parallax: 0.005
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Scan_Lines_Number: 260
+    - _Scan_Lines_Number: 178
     - _Scan_Lines_Speed: -0.012
-    - _Scan_Lines_Strength: 0.28
+    - _Scan_Lines_Strength: -0.04
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
