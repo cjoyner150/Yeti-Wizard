@@ -32,7 +32,7 @@ public class EnemySpawner : MonoBehaviour
         {
             foreach (Transform t in spawnLocations)
             {
-                float rand = Random.Range(0, 1f);
+                float rand = Random.value;
 
                 if (rand <= heavyEnemyChance)
                 {

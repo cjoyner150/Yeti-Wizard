@@ -16,7 +16,13 @@ public class HelpfulItemSpawner : MonoBehaviour
     {
         foreach (var loc in helpfulItemSpawnLocations)
         {
-            GameObject go = Instantiate(helpfulItemPrefabs[Random.Range(0, helpfulItemPrefabs.Length)], loc.position, loc.rotation);
+            float rand = Random.value;
+            if (rand < currentSpawnChance)
+            {
+                GameObject go = Instantiate(helpfulItemPrefabs[Random.Range(0, helpfulItemPrefabs.Length)], loc.position, loc.rotation);
+
+            }
+
 
         }
     }
