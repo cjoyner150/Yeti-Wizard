@@ -143,7 +143,7 @@ public class DraggableItem : MonoBehaviour, IDamageable
                 rigidBody.isKinematic = false;
                 rigidBody.useGravity = true;
 
-                StartCoroutine(AddExplosionForceToBody(rigidBody));
+                //StartCoroutine(AddExplosionForceToBody(rigidBody));
             }
 
             currentState = DraggableState.shattered;
