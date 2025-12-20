@@ -2,14 +2,15 @@ using UnityEngine;
 
 public class DraggableItem : MonoBehaviour, IDamageable
 {
-    [SerializeField] protected MeshRenderer mesh;
-    [SerializeField] protected Collider[] colliders;
+    [SerializeField] protected Collider[] shatterColliders;
     [SerializeField] protected float velocityThreshold = 10;
     [SerializeField] protected float yOffset = 0;
+    [SerializeField] protected int maxHP = 1;
     [SerializeField] protected VoidEventSO freezeEvent;
     [SerializeField] protected VoidEventSO unfreezeEvent;
 
     protected Rigidbody rb;
+    protected Collider col;
     protected bool frozen;
 
     public DraggableState currentState;
@@ -17,7 +18,8 @@ public class DraggableItem : MonoBehaviour, IDamageable
     {
         frozen,
         unfrozen,
-        dragging
+        dragging,
+        shattered
     }
 
     public int Health { get; set; }
@@ -34,9 +36,17 @@ public class DraggableItem : MonoBehaviour, IDamageable
         unfreezeEvent.onEventRaised -= TryUnfreezeItem;
     }
 
-    void Awake()
+    protected virtual void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        col = GetComponent<Collider>();
+
+        foreach (var collider in shatterColliders)
+        {
+            collider.enabled = false;
+        }
+
+        Health = maxHP;
     }
 
     public virtual void InitItem()
@@ -112,9 +122,25 @@ public class DraggableItem : MonoBehaviour, IDamageable
 
     public virtual void Die()
     {
-        Destroy(gameObject);
+        rb.isKinematic = true;
+        rb.useGravity = false;
 
-        //foreach (Collider collider in colliders) collider.enabled = false;
+        col.enabled = false;
+
+        foreach (var collider in shatterColliders)
+        {
+            collider.enabled = true;
+            Rigidbody rigidBody = collider.gameObject.AddComponent<Rigidbody>();
+
+            rigidBody.isKinematic = false;
+            rigidBody.useGravity = true;
+            rigidBody.transform.parent = null;
+        }
+
+        currentState = DraggableState.shattered;
+
+        Debug.Log($"{name} has died");
+
     }
 
     public virtual void Hit(int damage)

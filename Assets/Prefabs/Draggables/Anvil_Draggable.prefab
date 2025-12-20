@@ -20,6 +20,14 @@ PrefabInstance:
       propertyPath: 'colliders.Array.data[0]'
       value: 
       objectReference: {fileID: 6491185762356044355}
+    - target: {fileID: 718507166265296452, guid: 68dba7664aae6fd469a7543cd1fd154f, type: 3}
+      propertyPath: shatterColliders.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 718507166265296452, guid: 68dba7664aae6fd469a7543cd1fd154f, type: 3}
+      propertyPath: 'shatterColliders.Array.data[0]'
+      value: 
+      objectReference: {fileID: 6491185762356044355}
     - target: {fileID: 1682699590418706498, guid: 68dba7664aae6fd469a7543cd1fd154f, type: 3}
       propertyPath: m_Name
       value: Anvil_Draggable
@@ -93,10 +101,39 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1682699590418706498, guid: 68dba7664aae6fd469a7543cd1fd154f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5395659783642642979}
     - targetCorrespondingSourceObject: {fileID: 4480188746563207493, guid: 68dba7664aae6fd469a7543cd1fd154f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6491185762356044355}
   m_SourcePrefab: {fileID: 100100000, guid: 68dba7664aae6fd469a7543cd1fd154f, type: 3}
+--- !u!1 &1052971983493066776 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1682699590418706498, guid: 68dba7664aae6fd469a7543cd1fd154f, type: 3}
+  m_PrefabInstance: {fileID: 1857398585181651034}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &5395659783642642979
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1052971983493066776}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2876144029237149983 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4480188746563207493, guid: 68dba7664aae6fd469a7543cd1fd154f, type: 3}
