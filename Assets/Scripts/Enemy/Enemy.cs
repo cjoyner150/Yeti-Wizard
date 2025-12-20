@@ -212,17 +212,13 @@ public class Enemy : MonoBehaviour, IDamageable
         {
             if (hitRigidbody.transform.IsChildOf(transform)) return;
 
-            int damage = Mathf.RoundToInt(hitRigidbody.linearVelocity.magnitude * damageMult);
-            Hit(damage);
-            return;
-        }
-
-        Collider hitCollider = collision.collider;
-        if (hitCollider != null)
-        {
-            if (hitCollider.transform.IsChildOf(transform)) return;
-            if (!hitCollider.TryGetComponent(out DamageComponent dmgComponent)) return;
-
+            if (!hitRigidbody.TryGetComponent(out DamageComponent dmgComponent))
+            {
+                int damage = Mathf.RoundToInt(hitRigidbody.linearVelocity.magnitude * damageMult);
+                Hit(damage);
+                return;
+            }
+            
             Hit(dmgComponent.Damage);
             return;
         }
