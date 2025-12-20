@@ -12,6 +12,7 @@ public class Turret : DraggableItem
     [SerializeField] Transform shootLocLeft;
     [SerializeField] Transform shootLocRight;
     [SerializeField] GameObject bulletPrefab;
+    [SerializeField] Animator anim;
     
     PlayerController player;
 
@@ -28,6 +29,8 @@ public class Turret : DraggableItem
 
     private void Update()
     {
+        if (currentState == DraggableState.shattered) return;
+
         bool knockedOver = transform.rotation.eulerAngles.z > 30 || transform.rotation.eulerAngles.x > 30;
         bool playerInRange = Vector3.Distance(transform.position, player.transform.position) <= shootRange;
         
@@ -65,6 +68,8 @@ public class Turret : DraggableItem
         leftBullet.Launch();
 
         rightBullet.Init(1, 20f);
-        leftBullet.Launch();
+        rightBullet.Launch();
+
+        anim.SetTrigger("Fire");
     }
 }
