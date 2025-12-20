@@ -1,8 +1,9 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
+using Mono.Cecil.Cil;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IDamageable
 {
     #region Variables
 
@@ -35,6 +36,10 @@ public class PlayerController : MonoBehaviour
     
     [Header("Health")]
     public int maxHealth = 3;
+    public int Health { 
+        get { return currentHealth; }
+        set { currentHealth = value; }
+    }
     public float damageThreshold = 15f; 
     public float invincibilityTime = 1f; 
 
@@ -45,12 +50,17 @@ public class PlayerController : MonoBehaviour
     public AudioClip pickupSound;
     public AudioClip throwSound;
     private AudioSource audioSource;
+
+    [Header("Events")]
+    [SerializeField] VoidEventSO freezeEvent;
+    [SerializeField] VoidEventSO unfreezeEvent;
     
     // Private vars
     private float currentHoldDistance;
     private bool isGrounded;
     private Rigidbody rb;
-    private Rigidbody heldObject;
+    private Rigidbody heldObjectRB;
+    private DraggableItem heldObject;
     private float xRotation;
     private float currentMoveSpeed;
     
@@ -60,7 +70,7 @@ public class PlayerController : MonoBehaviour
     private bool isInvincible = false;
     
     // Mode switching
-    private bool isShootingMode = false;
+    private bool isCombatPhase = false;
     
     // Pickup
     private LevelManager levelManager;
@@ -70,6 +80,18 @@ public class PlayerController : MonoBehaviour
 
     #region Unity Methods
 
+    private void OnEnable()
+    {
+        freezeEvent.onEventRaised += Freeze;
+        unfreezeEvent.onEventRaised += Unfreeze;
+    }
+
+    private void OnDisable()
+    {
+        freezeEvent.onEventRaised -= Freeze;
+        unfreezeEvent.onEventRaised -= Unfreeze;
+    }
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -78,7 +100,7 @@ public class PlayerController : MonoBehaviour
         currentHealth = maxHealth;
         currentMoveSpeed = baseMoveSpeed;
         
-        levelManager = FindObjectOfType<LevelManager>();
+        levelManager = FindAnyObjectByType<LevelManager>();
         
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
@@ -97,7 +119,7 @@ public class PlayerController : MonoBehaviour
         
         HandlePickupInput();
         
-        if (!isShootingMode && heldObject != null)
+        if (heldObjectRB != null)
         {
             HandleHoldPointScroll();
             CheckAutoDrop();
@@ -112,7 +134,7 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate()
     {
         HandleMovement();
-        if (!isShootingMode && heldObject != null)
+        if (heldObjectRB != null)
         {
             HandleHeldObject();
         }
@@ -151,7 +173,7 @@ public class PlayerController : MonoBehaviour
 
     void CalculateCurrentSpeed()
     {
-        if (heldObject == null)
+        if (heldObjectRB == null)
         {
             currentMoveSpeed = baseMoveSpeed;
         }
@@ -167,7 +189,7 @@ public class PlayerController : MonoBehaviour
     {
         if (Keyboard.current.spaceKey.wasPressedThisFrame && isGrounded)
         {
-            float jumpModifier = heldObject != null ? 
+            float jumpModifier = heldObjectRB != null ? 
                 Mathf.Clamp(1f - (heldObjectMass * 0.1f), 0.5f, 1f) : 1f;
             
             rb.AddForce(Vector3.up * jumpForce * jumpModifier, ForceMode.Impulse);
@@ -200,13 +222,13 @@ public class PlayerController : MonoBehaviour
     {
         if (Mouse.current.rightButton.wasPressedThisFrame)
         {
-            if (heldObject == null)
+            if (heldObjectRB == null)
                 TryPickup();
             else
                 DropObject();
         }
         
-        if (heldObject != null && Mouse.current.leftButton.wasPressedThisFrame && !isShootingMode)
+        if (heldObjectRB != null && Mouse.current.leftButton.wasPressedThisFrame && isCombatPhase)
         {
             ThrowObject();
         }
@@ -236,12 +258,15 @@ public class PlayerController : MonoBehaviour
             Rigidbody rbHit = GetRigidbodyFromHit(hit.collider);
             if (rbHit != null && rbHit != rb)
             {
-                heldObject = rbHit;
-                heldObjectMass = heldObject.mass;
-                heldObject.useGravity = false;
-                heldObject.linearDamping = 10f;
-                heldObject.angularDamping = 5f;
-                currentHoldDistance = Vector3.Distance(cameraHolder.position, heldObject.position);
+                heldObjectRB = rbHit;
+                heldObject = heldObjectRB.GetComponent<DraggableItem>();
+
+                heldObject.PickUpItem();
+
+                heldObjectMass = heldObjectRB.mass;
+                heldObjectRB.linearDamping = 10f;
+                heldObjectRB.angularDamping = 5f;
+                currentHoldDistance = Vector3.Distance(cameraHolder.position, heldObjectRB.position);
                 
                 if (pickupSound != null && audioSource != null)
                 {
@@ -250,11 +275,11 @@ public class PlayerController : MonoBehaviour
                 
                 if (heldObjectMass >= heavyThreshold)
                 {
-                    Debug.Log($"Picked up HEAVY object: {heldObject.gameObject.name} (Mass: {heldObjectMass})");
+                    Debug.Log($"Picked up HEAVY object: {heldObjectRB.gameObject.name} (Mass: {heldObjectMass})");
                 }
                 else
                 {
-                    Debug.Log($"Picked up: {heldObject.gameObject.name} (Mass: {heldObjectMass})");
+                    Debug.Log($"Picked up: {heldObjectRB.gameObject.name} (Mass: {heldObjectMass})");
                 }
             }
         }
@@ -262,12 +287,14 @@ public class PlayerController : MonoBehaviour
 
     void DropObject()
     {
-        if (heldObject == null) return;
+        if (heldObjectRB == null) return;
 
-        heldObject.useGravity = true;
-        heldObject.linearDamping = 0f;
-        heldObject.angularDamping = 0.05f;
+        heldObject.DropItem();
+
+        heldObjectRB.linearDamping = 0f;
+        heldObjectRB.angularDamping = 0.05f;
         heldObjectMass = 0f;
+        heldObjectRB = null;
         heldObject = null;
         
         Debug.Log("Dropped object");
@@ -275,9 +302,9 @@ public class PlayerController : MonoBehaviour
 
     void CheckAutoDrop()
     {
-        if (heldObject == null) return;
+        if (heldObjectRB == null) return;
         
-        float distanceToObject = Vector3.Distance(cameraHolder.position, heldObject.position);
+        float distanceToObject = Vector3.Distance(cameraHolder.position, heldObjectRB.position);
         
         if (distanceToObject > maxHoldDistanceFromCamera)
         {
@@ -286,12 +313,12 @@ public class PlayerController : MonoBehaviour
             return;
         }
         
-        Ray ray = new Ray(cameraHolder.position, (heldObject.position - cameraHolder.position).normalized);
+        Ray ray = new Ray(cameraHolder.position, (heldObjectRB.position - cameraHolder.position).normalized);
         RaycastHit hit;
         
         if (Physics.Raycast(ray, out hit, distanceToObject))
         {
-            if (hit.rigidbody != heldObject && !hit.collider.isTrigger)
+            if (hit.rigidbody != heldObjectRB && !hit.collider.isTrigger)
             {
                 Debug.Log($"Auto-dropping object: Line of sight blocked by {hit.collider.name}");
                 DropObject();
@@ -301,23 +328,24 @@ public class PlayerController : MonoBehaviour
 
     void ThrowObject()
     {
-        if (heldObject == null) return;
+        if (heldObjectRB == null) return;
 
         Vector3 throwDirection = cameraHolder.forward;
         
         float massAdjustedForce = throwForce * (1f + heldObjectMass * 0.2f);
         
-        heldObject.AddForce(throwDirection * massAdjustedForce, ForceMode.Impulse);
+        heldObjectRB.AddForce(throwDirection * massAdjustedForce, ForceMode.Impulse);
         
         if (throwSound != null && audioSource != null)
         {
             audioSource.PlayOneShot(throwSound);
         }
         
-        heldObject.useGravity = true;
-        heldObject.linearDamping = 0f;
-        heldObject.angularDamping = 0.05f;
+        heldObjectRB.useGravity = true;
+        heldObjectRB.linearDamping = 0f;
+        heldObjectRB.angularDamping = 0.05f;
         heldObjectMass = 0f;
+        heldObjectRB = null;
         heldObject = null;
         
         Debug.Log($"Threw object with force: {massAdjustedForce:F1}");
@@ -325,27 +353,27 @@ public class PlayerController : MonoBehaviour
 
     void HandleHeldObject()
     {
-        if (heldObject == null) return;
+        if (heldObjectRB == null) return;
 
         Vector3 targetPos = cameraHolder.position + cameraHolder.forward * currentHoldDistance;
-        Vector3 direction = targetPos - heldObject.position;
+        Vector3 direction = targetPos - heldObjectRB.position;
         float distance = direction.magnitude;
         
         float massAdjustedForce = pickupForce * (1f + heldObjectMass * 0.1f);
         float adjustedForce = massAdjustedForce * Mathf.Clamp(distance, 0.5f, 3f);
         
-        heldObject.AddForce(direction.normalized * adjustedForce, ForceMode.Force);
-        heldObject.AddForce(-heldObject.linearVelocity * 2f, ForceMode.Acceleration);
+        heldObjectRB.AddForce(direction.normalized * adjustedForce, ForceMode.Force);
+        heldObjectRB.AddForce(-heldObjectRB.linearVelocity * 2f, ForceMode.Acceleration);
         
         if (heldObjectMass > heavyThreshold)
         {
-            heldObject.AddTorque(-heldObject.angularVelocity * 5f, ForceMode.Acceleration);
+            heldObjectRB.AddTorque(-heldObjectRB.angularVelocity * 5f, ForceMode.Acceleration);
         }
     }
 
     void HandleHoldPointScroll()
     {
-        if (heldObject == null) return;
+        if (heldObjectRB == null) return;
 
         float scroll = Mouse.current.scroll.ReadValue().y;
         if (Mathf.Abs(scroll) > 0.01f)
@@ -360,20 +388,20 @@ public class PlayerController : MonoBehaviour
 
     #region Mode Switching
 
-    public void SwitchToShootingMode()
+    public void SwitchToCombatMode()
     {
-        if (heldObject != null)
+        if (heldObjectRB != null)
         {
             DropObject();
         }
         
-        isShootingMode = true;
+        isCombatPhase = true;
         Debug.Log("Player: Switched to Shooting Mode");
     }
 
-    public void SwitchToPickupMode()
+    public void SwitchToPrepMode()
     {
-        isShootingMode = false;
+        isCombatPhase = false;
         Debug.Log("Player: Switched to Pickup Mode");
     }
 
@@ -403,11 +431,11 @@ public class PlayerController : MonoBehaviour
         
         if (impactForce >= damageThreshold)
         {
-            TakeDamage();
+            Hit(1);
         }
     }
 
-    void TakeDamage()
+    public void Hit(int damage)
     {
         if (isInvincible) return;
 
@@ -427,11 +455,11 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void Die()
+    public void Die()
     {
         Debug.Log("Player died!");
         
-        if (heldObject != null)
+        if (heldObjectRB != null)
         {
             DropObject();
         }
@@ -442,7 +470,7 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator DamageFlash()
     {
-        return null;
+        yield return null;
         //Add damage flash
     }
 
@@ -490,12 +518,12 @@ public class PlayerController : MonoBehaviour
 
     public bool IsShootingMode()
     {
-        return isShootingMode;
+        return isCombatPhase;
     }
 
     public bool IsHoldingObject()
     {
-        return heldObject != null;
+        return heldObjectRB != null;
     }
 
     public float GetHeldObjectMass()
@@ -505,7 +533,7 @@ public class PlayerController : MonoBehaviour
 
     public bool IsCarryingHeavyObject()
     {
-        return heldObject != null && heldObjectMass >= heavyThreshold;
+        return heldObjectRB != null && heldObjectMass >= heavyThreshold;
     }
 
     public float GetCurrentSpeed()
@@ -515,12 +543,12 @@ public class PlayerController : MonoBehaviour
 
     public void Freeze()
     {
-        SwitchToShootingMode();
+        SwitchToPrepMode();
     }
 
     public void Unfreeze()
     {
-        SwitchToPickupMode();
+        SwitchToCombatMode();
     }
 
     #endregion

@@ -32,29 +32,21 @@ public class EnemySpawner : MonoBehaviour
         {
             foreach (Transform t in spawnLocations)
             {
-                float rand = Random.Range(0, 1f);
+                float rand = Random.value;
 
                 if (rand <= heavyEnemyChance)
                 {
                     GameObject go = Instantiate(heavyEnemyPrefab, t.position, t.rotation);
-                    TempEnemy enemy = go.GetComponent<TempEnemy>();
-                    if (enemy.Init(player.transform, currentConfig.enemyDamageMultiplier))
-                    {
-                        count++;
-                    }
-                    else continue;
-
+                    //Enemy enemy = go.GetComponent<Enemy>();
+                    //enemy.Init(player.transform, currentConfig.enemyDamageMultiplier);
+                    count++;
                 }
                 else
                 {
                     GameObject go = Instantiate(enemyPrefab, t.position, t.rotation);
-                    TempEnemy enemy = go.GetComponent<TempEnemy>();
-                    if (enemy.Init(player.transform, currentConfig.enemyDamageMultiplier))
-                    {
-                        count++;
-                    }
-                    else continue;
-
+                    //Enemy enemy = go.GetComponent<Enemy>();
+                    //enemy.Init(player.transform, currentConfig.enemyDamageMultiplier);
+                    count++;
                 }
             }
         }

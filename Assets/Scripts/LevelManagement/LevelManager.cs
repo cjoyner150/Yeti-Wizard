@@ -12,6 +12,9 @@ public class LevelManager: MonoBehaviour
     [SerializeField] float heavyEnemySpawnChanceIncreaseRate;
     [SerializeField] float helpfulItemSpawnChanceDecreaseRate;
 
+    [Header("Item Spawning")]
+    [SerializeField] ItemSpawner[] ItemSpawners;
+
     [Header("Inscribed Variables")]
     [SerializeField] float prepTime;
 
@@ -90,6 +93,12 @@ public class LevelManager: MonoBehaviour
         {
             spawner.InitEnemySpawner(currentConfig, spawnAmountPerSpawner);
             spawned += spawner.SpawnEnemies();
+        }
+
+        foreach (var spawner in ItemSpawners)
+        {
+            spawner.InitSpawner(currentConfig);
+            spawner.SpawnItems();
         }
 
         currentAliveEnemies = spawned;

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3812840210024530927}
   - component: {fileID: 4485903696364910162}
   - component: {fileID: 9203771407522578588}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: TempDraggableItem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -50,6 +50,10 @@ MonoBehaviour:
   colliders:
   - {fileID: 7517500956537232202}
   velocityThreshold: 10
+  yOffset: 0.5
+  freezeEvent: {fileID: 11400000, guid: bdceff51fbc343b4f918e05d335a5c41, type: 2}
+  unfreezeEvent: {fileID: 11400000, guid: e99c13a2911bf9845a6a39b17334ee93, type: 2}
+  currentState: 0
 --- !u!54 &9203771407522578588
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -89,7 +93,7 @@ GameObject:
   - component: {fileID: 5345526714866283598}
   - component: {fileID: 6604576711752178402}
   - component: {fileID: 7517500956537232202}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}

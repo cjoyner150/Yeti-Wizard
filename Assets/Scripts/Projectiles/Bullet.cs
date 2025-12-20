@@ -28,12 +28,12 @@ public class Bullet : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        IDamageable damageable = other.GetComponentInParent<IDamageable>();
-        damageable?.Hit(damageComponent.Damage);
-        Destroy(gameObject);
-    }
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    IDamageable damageable = other.GetComponentInParent<IDamageable>();
+    //    damageable?.Hit(damageComponent.Damage);
+    //    Destroy(gameObject);
+    //}
 
     public void Init(int damage, float launchSpeed)
     {
