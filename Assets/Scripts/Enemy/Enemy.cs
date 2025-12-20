@@ -5,6 +5,7 @@ public class Enemy : MonoBehaviour, IDamageable
 {
     [Header("Health Settings")]
     [SerializeField] private int startingHealth;
+    [SerializeField] private float damageMult;
 
     [Header("Move Settings")]
     [SerializeField] private float stoppingDistanceToTarget;
@@ -16,6 +17,9 @@ public class Enemy : MonoBehaviour, IDamageable
     [SerializeField] private float bulletSpeed;
     [SerializeField] private int bulletDamage;
 
+    [Header("Death Settings")]
+    [SerializeField] private float despawnTime;
+
     [Header("Broadcast Events")]
     [SerializeField] private VoidEventSO deathEventSO;
 
@@ -24,15 +28,14 @@ public class Enemy : MonoBehaviour, IDamageable
     [SerializeField] private VoidEventSO unfreezeEventSO;
 
     private State state;
-
+    private int health;
+    private int bulletDamageMultiplier;
+    private float attackTimer;
+    private float despawnTimer;
+    private Transform currentTarget;
+    [SerializeField] private Transform goalTarget; // SerializeField is just for testing
     private Animator anim;
     private NavMeshAgent navAgent;
-    [SerializeField] private Transform goalTarget; // SerializeField, just for testing
-    private Transform currentTarget;
-
-    private int health;
-    private float attackTimer;
-    private int bulletDamageMultiplier;
 
     private const string ANIM_PARAM_MOVING = "IsMoving";
     private const string ANIM_PARAM_ATTACKING = "IsShooting";
@@ -44,7 +47,6 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         anim = GetComponentInChildren<Animator>();
         TryGetComponent(out navAgent);
-        ChangeState(State.Moving); // Change to Frozen
     }
 
     private void OnEnable()
@@ -63,6 +65,7 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         currentTarget = goalTarget; // For Testing
         health = startingHealth;
+        ChangeState(State.Moving); // Change to Frozen
     }
 
     private void Update()
@@ -79,6 +82,7 @@ public class Enemy : MonoBehaviour, IDamageable
                 HandleAttacking();
                 break;
             case State.Dead:
+                HandleDeath();
                 break;
         }
     }
@@ -130,6 +134,10 @@ public class Enemy : MonoBehaviour, IDamageable
                 anim.SetBool(ANIM_PARAM_ATTACKING, true);
                 break;
             case State.Dead:
+                navAgent.isStopped = true;
+                navAgent.enabled = false;
+                anim.enabled = false;
+                despawnTimer = despawnTime;
                 break;
         }
     }
@@ -193,9 +201,21 @@ public class Enemy : MonoBehaviour, IDamageable
     }
     #endregion
 
-    #region Damage
+    #region Collision
+    private void OnCollisionEnter(Collision collision)
+    {
+        Rigidbody hitRigidbody = collision.rigidbody;
+        if (hitRigidbody == null) return;
+        if (hitRigidbody.transform.IsChildOf(transform)) return;
+
+        int damage = Mathf.RoundToInt(hitRigidbody.linearVelocity.magnitude * damageMult);
+        Hit(damage);
+    }
+
     public void Hit(int damage)
     {
+        if (state == State.Dead) return;
+
         health -= damage;
 
         if (health < 0)
@@ -203,11 +223,24 @@ public class Enemy : MonoBehaviour, IDamageable
             Die();
         }
     }
+    #endregion
+
+    #region Death
     public void Die()
     {
-        Destroy(gameObject);
+        ChangeState(State.Dead);
     }
 
+    private void HandleDeath()
+    {
+        if (despawnTimer > 0)
+        {
+            despawnTimer -= Time.deltaTime;
+            return;
+        }
+
+        Destroy(gameObject);
+    }
     #endregion
 
     #region Player Detection
