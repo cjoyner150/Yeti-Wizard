@@ -106,7 +106,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1182402221188481227
 Transform:
   m_ObjectHideFlags: 0
@@ -157,6 +157,7 @@ GameObject:
   - component: {fileID: 3431139454590261166}
   - component: {fileID: 5325897513445142594}
   - component: {fileID: 6236664591292791679}
+  - component: {fileID: 7863672018995372582}
   m_Layer: 8
   m_Name: Bullet
   m_TagString: Untagged
@@ -189,7 +190,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3852671534667916868}
   serializedVersion: 5
-  m_Mass: 1
+  m_Mass: 0.5
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -205,9 +206,9 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 0
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &5325897513445142594
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -234,3 +235,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bullet
   disappearTime: 2
+--- !u!136 &7863672018995372582
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3852671534667916868}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5257577
+  m_Height: 2.069006
+  m_Direction: 2
+  m_Center: {x: 0, y: -0.0217551, z: -0.0058984756}

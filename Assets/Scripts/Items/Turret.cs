@@ -58,6 +58,13 @@ public class Turret : DraggableItem
         GameObject left = Instantiate(bulletPrefab, shootLocLeft.position, shootLocLeft.rotation);
         GameObject right = Instantiate(bulletPrefab, shootLocRight.position, shootLocRight.rotation);
 
+        Bullet leftBullet = left.GetComponent<Bullet>();
+        Bullet rightBullet = right.GetComponent<Bullet>();
+        
+        leftBullet.Init(1, 20f);
+        leftBullet.Launch();
 
+        rightBullet.Init(1, 20f);
+        leftBullet.Launch();
     }
 }

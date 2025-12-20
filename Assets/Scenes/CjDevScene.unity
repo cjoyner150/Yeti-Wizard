@@ -212,6 +212,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &206000485 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4432524653122628465, guid: d88ea33df5f342b4abd8f0063e006f11, type: 3}
+  m_PrefabInstance: {fileID: 1278390264}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &254856046
 GameObject:
   m_ObjectHideFlags: 0
@@ -530,9 +535,29 @@ PrefabInstance:
       value: Turret_Draggable
       objectReference: {fileID: 0}
     - target: {fileID: 6142682248371794974, guid: d88ea33df5f342b4abd8f0063e006f11, type: 3}
+      propertyPath: shootRange
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6142682248371794974, guid: d88ea33df5f342b4abd8f0063e006f11, type: 3}
       propertyPath: turretHead
       value: 
       objectReference: {fileID: 1278390271}
+    - target: {fileID: 6142682248371794974, guid: d88ea33df5f342b4abd8f0063e006f11, type: 3}
+      propertyPath: bulletPrefab
+      value: 
+      objectReference: {fileID: 3852671534667916868, guid: cca0af09f20534844a27d842d534362b, type: 3}
+    - target: {fileID: 6142682248371794974, guid: d88ea33df5f342b4abd8f0063e006f11, type: 3}
+      propertyPath: shootLocLeft
+      value: 
+      objectReference: {fileID: 206000485}
+    - target: {fileID: 6142682248371794974, guid: d88ea33df5f342b4abd8f0063e006f11, type: 3}
+      propertyPath: shootCooldown
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6142682248371794974, guid: d88ea33df5f342b4abd8f0063e006f11, type: 3}
+      propertyPath: shootLocRight
+      value: 
+      objectReference: {fileID: 1973483334}
     - target: {fileID: 6142682248371794974, guid: d88ea33df5f342b4abd8f0063e006f11, type: 3}
       propertyPath: shatterBodies.Array.size
       value: 0
@@ -911,6 +936,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &1973483334 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5701362959283168521, guid: d88ea33df5f342b4abd8f0063e006f11, type: 3}
+  m_PrefabInstance: {fileID: 1278390264}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2039991002
 PrefabInstance:
   m_ObjectHideFlags: 0
