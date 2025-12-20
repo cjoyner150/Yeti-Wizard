@@ -1,8 +1,11 @@
+using System.Collections;
 using UnityEngine;
 
 public class DraggableItem : MonoBehaviour, IDamageable
 {
     [SerializeField] protected Collider[] shatterColliders;
+    [SerializeField] protected Transform shatterExplosionPoint;
+    [SerializeField] protected bool isDestructible;
     [SerializeField] protected float velocityThreshold = 10;
     [SerializeField] protected float yOffset = 0;
     [SerializeField] protected int maxHP = 1;
@@ -122,29 +125,49 @@ public class DraggableItem : MonoBehaviour, IDamageable
 
     public virtual void Die()
     {
-        rb.isKinematic = true;
-        rb.useGravity = false;
+        if (currentState == DraggableState.shattered) return;
 
-        col.enabled = false;
-
-        foreach (var collider in shatterColliders)
+        if (isDestructible)
         {
-            collider.enabled = true;
-            Rigidbody rigidBody = collider.gameObject.AddComponent<Rigidbody>();
+            rb.isKinematic = true;
+            rb.useGravity = false;
 
-            rigidBody.isKinematic = false;
-            rigidBody.useGravity = true;
-            rigidBody.transform.parent = null;
+            col.enabled = false;
+
+            foreach (var collider in shatterColliders)
+            {
+                collider.enabled = true;
+                collider.gameObject.transform.SetParent(null, true);
+                Rigidbody rigidBody = collider.gameObject.AddComponent<Rigidbody>();
+
+                rigidBody.isKinematic = false;
+                rigidBody.useGravity = true;
+
+                StartCoroutine(AddExplosionForceToBody(rigidBody));
+            }
+
+            currentState = DraggableState.shattered;
+
+            Debug.Log($"{name} has died");
+        }
+        else
+        {
+            Destroy(gameObject);
         }
 
-        currentState = DraggableState.shattered;
 
-        Debug.Log($"{name} has died");
+    }
 
+    IEnumerator AddExplosionForceToBody(Rigidbody body)
+    {
+        yield return new WaitForSeconds(.5f);
+        body.AddExplosionForce(1f, shatterExplosionPoint.position, 3f);
     }
 
     public virtual void Hit(int damage)
     {
+        if (currentState == DraggableState.shattered) return;
+
         Health -= damage;
 
         if (Health <= 0) Die();

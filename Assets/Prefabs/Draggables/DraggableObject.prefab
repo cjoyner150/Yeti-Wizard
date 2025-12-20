@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6892193680753227265}
   - component: {fileID: 718507166265296452}
   - component: {fileID: 6400879675504579065}
+  - component: {fileID: -3111174450119415950}
   m_Layer: 6
   m_Name: DraggableObject
   m_TagString: Untagged
@@ -46,11 +47,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d9887e383f60fc4abad78c08c7ec9e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DraggableItem
-  mesh: {fileID: 5563601549777843365}
-  colliders:
+  shatterColliders:
   - {fileID: 5579088339104695394}
+  isDestructible: 0
   velocityThreshold: 10
-  yOffset: 0
+  yOffset: 0.5
+  maxHP: 1
   freezeEvent: {fileID: 11400000, guid: bdceff51fbc343b4f918e05d335a5c41, type: 2}
   unfreezeEvent: {fileID: 11400000, guid: e99c13a2911bf9845a6a39b17334ee93, type: 2}
   currentState: 0
@@ -81,6 +83,27 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!135 &-3111174450119415950
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1682699590418706498}
+  m_Material: {fileID: 13400000, guid: a938aae262ff5944fb2fce395a671624, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &4480188746563207493
 GameObject:
   m_ObjectHideFlags: 0
@@ -179,7 +202,7 @@ SphereCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4480188746563207493}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: a938aae262ff5944fb2fce395a671624, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0

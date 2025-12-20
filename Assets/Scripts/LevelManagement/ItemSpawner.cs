@@ -1,9 +1,10 @@
 using UnityEngine;
 
-public class HelpfulItemSpawner : MonoBehaviour
+public class ItemSpawner : MonoBehaviour
 {
-    [SerializeField] GameObject[] helpfulItemPrefabs;
-    [SerializeField] Transform[] helpfulItemSpawnLocations;
+    [SerializeField] GameObject[] ItemPrefabs;
+    [SerializeField] Transform[] ItemSpawnLocations;
+    [SerializeField] bool helpfulItems;
 
     float currentSpawnChance = 1;
 
@@ -14,12 +15,12 @@ public class HelpfulItemSpawner : MonoBehaviour
 
     public void SpawnItems()
     {
-        foreach (var loc in helpfulItemSpawnLocations)
+        foreach (var loc in ItemSpawnLocations)
         {
             float rand = Random.value;
-            if (rand < currentSpawnChance)
+            if (rand < currentSpawnChance || !helpfulItems)
             {
-                GameObject go = Instantiate(helpfulItemPrefabs[Random.Range(0, helpfulItemPrefabs.Length)], loc.position, loc.rotation);
+                GameObject go = Instantiate(ItemPrefabs[Random.Range(0, ItemPrefabs.Length)], loc.position, loc.rotation);
 
                 DraggableItem[] draggables = go.GetComponentsInChildren<DraggableItem>();
                 foreach(var draggable in draggables) draggable.InitItem();
