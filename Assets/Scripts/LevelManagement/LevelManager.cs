@@ -1,0 +1,148 @@
+using System;
+using UnityEngine;
+using UnityEngine.Playables;
+
+public class LevelManager: MonoBehaviour
+{
+    [Header("Enemy Spawning")]
+    [SerializeField] GameObject enemyPrefab;
+    [SerializeField] GameObject heavyEnemyPrefab;
+    [SerializeField] EnemySpawner[] enemySpawners;
+    [SerializeField] int enemySpawnIncreaseRate;
+    [SerializeField] float heavyEnemySpawnChanceIncreaseRate;
+    [SerializeField] float helpfulItemSpawnChanceDecreaseRate;
+
+    [Header("Inscribed Variables")]
+    [SerializeField] float prepTime;
+
+    [Header("Waves")]
+    [SerializeField] WaveConfig initialConfig;
+    WaveConfig currentConfig;
+
+    [Header("References")]
+    [SerializeField] GameObject player;
+    [SerializeField] PlayableDirector startWaveTimeline;
+
+    [Header("Events")]
+    [SerializeField] VoidEventSO freezeEvent;
+    [SerializeField] VoidEventSO unfreezeEvent;
+    [SerializeField] VoidEventSO onWaveComplete;
+    [SerializeField] VoidEventSO onEnemyDied;
+
+    float prepTimer;
+    bool frozen = true;
+    int currentAliveEnemies;
+
+    static LevelManager instance;
+
+    private void OnEnable()
+    {
+        onWaveComplete.onEventRaised += OnWaveComplete;
+        onEnemyDied.onEventRaised += OnEnemyDied;
+    }
+
+
+    private void OnDisable()
+    {
+        onWaveComplete.onEventRaised -= OnWaveComplete;
+        onEnemyDied.onEventRaised -= OnEnemyDied;
+    }
+
+    private void Awake()
+    {
+        if (instance != null) Destroy(this); 
+        else
+        {
+            instance = this;
+        }
+
+        currentConfig = initialConfig;
+
+        BeginWave();
+    }
+
+    private void Start()
+    {
+        Freeze();
+    }
+
+    private void Update()
+    {
+        if (frozen)
+        {
+            prepTimer -= Time.deltaTime;
+
+            if (prepTimer <= 0)
+            {
+                Unfreeze();
+            }
+        }
+    }
+
+    private void BeginWave()
+    {
+        prepTimer = prepTime;
+
+        int spawnAmountPerSpawner = currentConfig.enemies / enemySpawners.Length;
+        int spawned = 0;
+
+        foreach (var spawner in enemySpawners)
+        {
+            spawner.InitEnemySpawner(currentConfig, spawnAmountPerSpawner);
+            spawned += spawner.SpawnEnemies();
+        }
+
+        currentAliveEnemies = spawned;
+    }
+
+    void OnWaveComplete()
+    {
+        currentConfig = GenerateNextWave();
+        BeginWave();
+    }
+
+    WaveConfig GenerateNextWave()
+    {
+        int newWaveNumber = currentConfig.waveNumber + 1;
+        int newEnemyAmount = (newWaveNumber * enemySpawnIncreaseRate) + 20;
+        int newEnemyDamageMultiplier;
+
+        if (newWaveNumber < 3)
+        {
+            newEnemyDamageMultiplier = 1;
+        }
+        else if (newWaveNumber < 10)
+        {
+            newEnemyDamageMultiplier = 2;
+        }
+        else newEnemyDamageMultiplier = 3;
+
+        float newHeavyEnemySpawnChance = (newWaveNumber * heavyEnemySpawnChanceIncreaseRate) + .1f;
+        float newHelpfulItemSpawnChance = 1f - (newWaveNumber * helpfulItemSpawnChanceDecreaseRate);
+
+        return new WaveConfig(newWaveNumber, newEnemyAmount, newEnemyDamageMultiplier, newHeavyEnemySpawnChance, newHelpfulItemSpawnChance);
+
+    }
+
+    private void Freeze()
+    {
+        freezeEvent.onEventRaised?.Invoke();
+        frozen = true;
+    }
+
+    private void Unfreeze()
+    {
+        frozen = false;
+        unfreezeEvent.onEventRaised?.Invoke();
+    }
+
+    private void OnEnemyDied()
+    {
+        currentAliveEnemies--;
+
+        if (currentAliveEnemies <= 0)
+        {
+            onWaveComplete.onEventRaised?.Invoke();
+        }
+    }
+}
