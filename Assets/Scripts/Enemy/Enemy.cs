@@ -27,6 +27,7 @@ public class Enemy : MonoBehaviour
     private const string ANIM_PARAM_MOVING = "IsMoving";
     private const string ANIM_PARAM_ATTACKING = "IsShooting";
 
+    #region Unity Methods
     private void Awake()
     {
         anim = GetComponentInChildren<Animator>();
@@ -34,6 +35,25 @@ public class Enemy : MonoBehaviour
         ChangeState(State.Moving);
     }
 
+    private void Update()
+    {
+        switch (state)
+        {
+            case State.Frozen:
+                break;
+            case State.Moving:
+                HandleMovement();
+                break;
+            case State.Attacking:
+                HandleAttacking();
+                break;
+            case State.Dead:
+                break;
+        }
+    }
+    #endregion
+
+    #region Init
     public void Init(Transform playerTransform, float spawnRadiusFromOrigin)
     {
         player = playerTransform;
@@ -42,7 +62,9 @@ public class Enemy : MonoBehaviour
 
         ChangeState(State.Moving);
     }
+    #endregion
 
+    #region State Management
     private void ChangeState(State newState)
     {
         switch (state)
@@ -78,24 +100,9 @@ public class Enemy : MonoBehaviour
                 break;
         }
     }
+    #endregion
 
-    private void Update()
-    {
-        switch (state)
-        {
-            case State.Frozen:
-                break;
-            case State.Moving:
-                HandleMovement();
-                break;
-            case State.Attacking:
-                HandleAttacking();
-                break;
-            case State.Dead:
-                break;
-        }
-    }
-
+    #region Movement
     private void HandleMovement()
     {
         if (navAgent == null) return;
@@ -110,7 +117,9 @@ public class Enemy : MonoBehaviour
             ChangeState(State.Attacking);
         }
     }
+    #endregion
 
+    #region Attacking
     private void HandleAttacking()
     {
         if (attackTimer > 0)
@@ -137,11 +146,14 @@ public class Enemy : MonoBehaviour
             return;
         }
     }
+    #endregion
 
+    #region Utility
     public bool IsWithinStoppingDistanceFromPlayer()
     {
         return navAgent.remainingDistance <= stoppingDistanceToPlayer;
     }
+    #endregion
 
     public enum State
     {
