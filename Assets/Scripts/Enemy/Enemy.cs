@@ -24,6 +24,9 @@ public class Enemy : MonoBehaviour
 
     private float attackTimer;
 
+    private const string ANIM_PARAM_MOVING = "IsMoving";
+    private const string ANIM_PARAM_ATTACKING = "IsShooting";
+
     private void Awake()
     {
         anim = GetComponentInChildren<Animator>();
@@ -48,8 +51,10 @@ public class Enemy : MonoBehaviour
                 break;
             case State.Moving:
                 navAgent.isStopped = true;
+                anim.SetBool(ANIM_PARAM_MOVING, false);
                 break;
             case State.Attacking:
+                anim.SetBool(ANIM_PARAM_ATTACKING, false);
                 break;
             case State.Dead:
                 break;
@@ -63,9 +68,11 @@ public class Enemy : MonoBehaviour
                 break;
             case State.Moving:
                 navAgent.isStopped = false;
+                anim.SetBool(ANIM_PARAM_MOVING, true);
                 break;
             case State.Attacking:
                 attackTimer = attackRate;
+                anim.SetBool(ANIM_PARAM_ATTACKING, true);
                 break;
             case State.Dead:
                 break;
