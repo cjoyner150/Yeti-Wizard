@@ -1,8 +1,10 @@
+using System.Collections;
 using UnityEngine;
 
 public class DraggableItem : MonoBehaviour, IDamageable
 {
     [SerializeField] protected Collider[] shatterColliders;
+    [SerializeField] protected Transform shatterExplosionPoint;
     [SerializeField] protected bool isDestructible;
     [SerializeField] protected float velocityThreshold = 10;
     [SerializeField] protected float yOffset = 0;
@@ -135,11 +137,13 @@ public class DraggableItem : MonoBehaviour, IDamageable
             foreach (var collider in shatterColliders)
             {
                 collider.enabled = true;
+                collider.gameObject.transform.SetParent(null, true);
                 Rigidbody rigidBody = collider.gameObject.AddComponent<Rigidbody>();
 
                 rigidBody.isKinematic = false;
                 rigidBody.useGravity = true;
-                rigidBody.transform.parent = null;
+
+                StartCoroutine(AddExplosionForceToBody(rigidBody));
             }
 
             currentState = DraggableState.shattered;
@@ -152,6 +156,12 @@ public class DraggableItem : MonoBehaviour, IDamageable
         }
 
 
+    }
+
+    IEnumerator AddExplosionForceToBody(Rigidbody body)
+    {
+        yield return new WaitForSeconds(.5f);
+        body.AddExplosionForce(1f, shatterExplosionPoint.position, 3f);
     }
 
     public virtual void Hit(int damage)
