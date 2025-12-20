@@ -44,9 +44,12 @@ public class DraggableItem : MonoBehaviour, IDamageable
         rb = GetComponent<Rigidbody>();
         col = GetComponent<Collider>();
 
-        foreach (var collider in shatterColliders)
+        if (isDestructible)
         {
-            collider.enabled = false;
+            foreach (var collider in shatterColliders)
+            {
+                collider.enabled = false;
+            }
         }
 
         Health = maxHP;

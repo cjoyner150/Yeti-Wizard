@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 5c69cb1eb0ba9d640a3955c4a6052a71
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 171273
+  packageName: Free Anvil
+  packageVersion: 1.0
+  assetPath: Assets/FreeAnvil/Materials/M_Anvil.mat
+  uploadId: 374228
