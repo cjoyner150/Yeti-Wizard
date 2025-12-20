@@ -434,20 +434,7 @@ MonoBehaviour:
   maxHealth: 3
   damageThreshold: 15
   invincibilityTime: 1
-  bulletPrefab: {fileID: 0}
-  gunShootPoint: {fileID: 764011977}
-  bulletSpeed: 50
-  gunFireRate: 0.2
-  gunDamage: 10
-  bulletLifetime: 3
-  maxAmmo: 30
-  currentAmmo: 0
-  reloadTime: 1.5
   throwForce: 15
-  gunModel: {fileID: 0}
-  muzzleFlash: {fileID: 0}
-  shootSound: {fileID: 0}
-  reloadSound: {fileID: 0}
   pickupSound: {fileID: 0}
   throwSound: {fileID: 0}
 --- !u!136 &1017225859
@@ -962,7 +949,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1918023967}
   serializedVersion: 5
-  m_Mass: 10
+  m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
