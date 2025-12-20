@@ -1,4 +1,3 @@
-using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -16,6 +15,13 @@ public class Enemy : MonoBehaviour, IDamageable
     [SerializeField] private float attackRate;
     [SerializeField] private float bulletSpeed;
     [SerializeField] private int bulletDamage;
+
+    [Header("Broadcast Events")]
+    [SerializeField] private VoidEventSO deathEventSO;
+
+    [Header("Listen Events")]
+    [SerializeField] private VoidEventSO freezeEventSO;
+    [SerializeField] private VoidEventSO unfreezeEventSO;
 
     private State state;
 
@@ -39,6 +45,18 @@ public class Enemy : MonoBehaviour, IDamageable
         anim = GetComponentInChildren<Animator>();
         TryGetComponent(out navAgent);
         ChangeState(State.Moving); // Change to Frozen
+    }
+
+    private void OnEnable()
+    {
+        freezeEventSO.onEventRaised += Freeze;
+        unfreezeEventSO.onEventRaised += Unfreeze;
+    }
+
+    private void OnDisable()
+    {
+        freezeEventSO.onEventRaised -= Freeze;
+        unfreezeEventSO.onEventRaised -= Unfreeze;
     }
 
     private void Start()
@@ -114,6 +132,18 @@ public class Enemy : MonoBehaviour, IDamageable
             case State.Dead:
                 break;
         }
+    }
+    #endregion
+
+    #region Freezing
+    private void Freeze()
+    {
+        ChangeState(State.Frozen);
+    }
+
+    private void Unfreeze()
+    {
+        ChangeState(State.Moving);
     }
     #endregion
 
