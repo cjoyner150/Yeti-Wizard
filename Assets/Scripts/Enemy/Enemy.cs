@@ -1,3 +1,4 @@
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -7,7 +8,7 @@ public class Enemy : MonoBehaviour, IDamageable
     [SerializeField] private int startingHealth;
 
     [Header("Move Settings")]
-    [SerializeField] private float stoppingDistanceToPlayer;
+    [SerializeField] private float stoppingDistanceToTarget;
 
     [Header("Attack Settings")]
     [SerializeField] private Transform bulletSpawnPoint;
@@ -20,7 +21,8 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private Animator anim;
     private NavMeshAgent navAgent;
-    [SerializeField] private Transform player;
+    [SerializeField] private Transform goalTarget; // SerializeField, just for testing
+    private Transform currentTarget;
 
     private int health;
     private float attackTimer;
@@ -36,11 +38,12 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         anim = GetComponentInChildren<Animator>();
         TryGetComponent(out navAgent);
-        ChangeState(State.Moving);
+        ChangeState(State.Moving); // Change to Frozen
     }
 
     private void Start()
     {
+        currentTarget = goalTarget; // For Testing
         health = startingHealth;
     }
 
@@ -54,6 +57,7 @@ public class Enemy : MonoBehaviour, IDamageable
                 HandleMovement();
                 break;
             case State.Attacking:
+                FaceTarget();
                 HandleAttacking();
                 break;
             case State.Dead:
@@ -63,9 +67,9 @@ public class Enemy : MonoBehaviour, IDamageable
     #endregion
 
     #region Init
-    public void Init(Transform playerTransform, int bulletDamageMult)
+    public void Init(Transform goalTransform, int bulletDamageMult)
     {
-        player = playerTransform;
+        goalTarget = goalTransform;
         NavMesh.SamplePosition(Vector2.zero, out NavMeshHit hit, 500f, NavMesh.AllAreas);
         navAgent.Warp(hit.position);
 
@@ -117,13 +121,13 @@ public class Enemy : MonoBehaviour, IDamageable
     private void HandleMovement()
     {
         if (navAgent == null) return;
-        if (player == null) return;
+        if (currentTarget == null) return;
 
-        navAgent.SetDestination(player.position);
+        navAgent.SetDestination(currentTarget.position);
 
         if (navAgent.pathPending) return;
 
-        if (IsWithinStoppingDistanceFromPlayer())
+        if (IsWithinStoppingDistanceFromTarget())
         {
             ChangeState(State.Attacking);
         }
@@ -147,11 +151,11 @@ public class Enemy : MonoBehaviour, IDamageable
         bullet.Init(bulletDamage * bulletDamageMultiplier, bulletSpeed);
         bullet.Launch();
 
-        navAgent.SetDestination(player.position);
+        navAgent.SetDestination(currentTarget.position);
 
         if (navAgent.pathPending) return;
 
-        if (!IsWithinStoppingDistanceFromPlayer())
+        if (!IsWithinStoppingDistanceFromTarget())
         {
             ChangeState(State.Moving);
             return;
@@ -176,10 +180,42 @@ public class Enemy : MonoBehaviour, IDamageable
 
     #endregion
 
-    #region Utility
-    public bool IsWithinStoppingDistanceFromPlayer()
+    #region Player Detection
+    private void OnTriggerEnter(Collider other)
     {
-        return navAgent.remainingDistance <= stoppingDistanceToPlayer;
+        if (other.GetComponentInParent<PlayerController>())
+        {
+            currentTarget = other.transform;
+            return;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.GetComponentInParent<PlayerController>())
+        {
+            currentTarget = goalTarget;
+            return;
+        }
+    }
+    #endregion
+
+    #region Utility
+    public bool IsWithinStoppingDistanceFromTarget()
+    {
+        return navAgent.remainingDistance <= stoppingDistanceToTarget;
+    }
+
+    public void FaceTarget()
+    {
+        if (currentTarget == null) return;
+
+        Vector3 directionToTarget = currentTarget.position - transform.position;
+        directionToTarget.y = 0;
+
+        Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);
+
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, navAgent.angularSpeed * Time.deltaTime);
     }
     #endregion
 

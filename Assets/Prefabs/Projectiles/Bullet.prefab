@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 3083767991257066646}
   - component: {fileID: 3838538575902274562}
   - component: {fileID: 2774303145955949081}
-  m_Layer: 0
-  m_Name: Sphere
+  m_Layer: 8
+  m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -100,8 +100,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1182402221188481227}
   - component: {fileID: 4902818631936970399}
-  m_Layer: 0
-  m_Name: Collider
+  m_Layer: 8
+  m_Name: Trigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -157,7 +157,7 @@ GameObject:
   - component: {fileID: 3431139454590261166}
   - component: {fileID: 5325897513445142594}
   - component: {fileID: 6236664591292791679}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
