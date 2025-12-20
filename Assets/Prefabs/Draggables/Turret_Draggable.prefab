@@ -488,7 +488,7 @@ MonoBehaviour:
   currentState: 0
   turretHead: {fileID: 620868042346450124}
   turnSpeed: 2
-  shootCooldown: 1
+  shootCooldown: 0.5
   shootRange: 15
   shootLocLeft: {fileID: 4432524653122628465}
   shootLocRight: {fileID: 5701362959283168521}
