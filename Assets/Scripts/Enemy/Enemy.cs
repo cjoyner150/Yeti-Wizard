@@ -39,6 +39,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private const string ANIM_PARAM_MOVING = "IsMoving";
     private const string ANIM_PARAM_ATTACKING = "IsShooting";
+    private const float GUN_BARREL_ROTATION_LIMIT = 15f;
 
     public int Health { get => health; set => health = value; }
 
@@ -185,6 +186,8 @@ public class Enemy : MonoBehaviour, IDamageable
         if (bulletSpawnPoint == null) return;
         if (bulletPrefab == null) return;
 
+        RotateGunBarrelTowardsTarget();
+
         Bullet bullet = Instantiate(bulletPrefab, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
         bullet.Init(bulletDamage * bulletDamageMultiplier, bulletSpeed);
         bullet.Launch();
@@ -205,11 +208,24 @@ public class Enemy : MonoBehaviour, IDamageable
     private void OnCollisionEnter(Collision collision)
     {
         Rigidbody hitRigidbody = collision.rigidbody;
-        if (hitRigidbody == null) return;
-        if (hitRigidbody.transform.IsChildOf(transform)) return;
+        if (hitRigidbody != null)
+        {
+            if (hitRigidbody.transform.IsChildOf(transform)) return;
 
-        int damage = Mathf.RoundToInt(hitRigidbody.linearVelocity.magnitude * damageMult);
-        Hit(damage);
+            int damage = Mathf.RoundToInt(hitRigidbody.linearVelocity.magnitude * damageMult);
+            Hit(damage);
+            return;
+        }
+
+        Collider hitCollider = collision.collider;
+        if (hitCollider != null)
+        {
+            if (hitCollider.transform.IsChildOf(transform)) return;
+            if (!hitCollider.TryGetComponent(out DamageComponent dmgComponent)) return;
+
+            Hit(dmgComponent.Damage);
+            return;
+        }
     }
 
     public void Hit(int damage)
@@ -264,12 +280,12 @@ public class Enemy : MonoBehaviour, IDamageable
     #endregion
 
     #region Utility
-    public bool IsWithinStoppingDistanceFromTarget()
+    private bool IsWithinStoppingDistanceFromTarget()
     {
         return navAgent.remainingDistance <= stoppingDistanceToTarget;
     }
 
-    public void FaceTarget()
+    private void FaceTarget()
     {
         if (currentTarget == null) return;
 
@@ -279,6 +295,23 @@ public class Enemy : MonoBehaviour, IDamageable
         Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);
 
         transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, navAgent.angularSpeed * Time.deltaTime);
+    }
+
+    private void RotateGunBarrelTowardsTarget()
+    {
+        if (currentTarget == null) return;
+
+        Vector3 directionToTarget = currentTarget.position - bulletSpawnPoint.position;
+
+        Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);
+        float angleToTarget = Vector3.Angle(transform.forward, directionToTarget);
+
+        if (angleToTarget > GUN_BARREL_ROTATION_LIMIT)
+        {
+            targetRotation = Quaternion.RotateTowards(Quaternion.LookRotation(transform.forward), Quaternion.LookRotation(directionToTarget), GUN_BARREL_ROTATION_LIMIT);
+        }
+
+        bulletSpawnPoint.rotation = targetRotation;
     }
     #endregion
 
