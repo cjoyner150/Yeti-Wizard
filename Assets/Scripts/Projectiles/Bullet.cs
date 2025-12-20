@@ -17,24 +17,21 @@ public class Bullet : MonoBehaviour
         TryGetComponent(out damageComponent);
     }
 
-    private void Start()
-    {
-        disappearTimer = disappearTime;
-    }
-
     private void Update()
     {
         if (disappearTimer > 0)
         {
             disappearTimer -= Time.deltaTime;
+
+            if (disappearTimer <= 0) Destroy(gameObject);
             return;
         }
-
-        Destroy(gameObject);
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        IDamageable damageable = other.GetComponentInParent<IDamageable>();
+        damageable?.Damage(damageComponent.Damage);
         Destroy(gameObject);
     }
 
@@ -47,5 +44,6 @@ public class Bullet : MonoBehaviour
     public void Launch()
     {
         rb.AddForce(transform.forward * speed, ForceMode.Impulse);
+        disappearTimer = disappearTime;
     }
 }

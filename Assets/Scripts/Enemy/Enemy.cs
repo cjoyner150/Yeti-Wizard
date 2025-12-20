@@ -1,10 +1,10 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Enemy : MonoBehaviour
+public class Enemy : MonoBehaviour, IDamageable
 {
-    [Header("Spawn Settings")]
-    [SerializeField] private float spawnCheckRadius;
+    [Header("Health Settings")]
+    [SerializeField] private int startingHealth;
 
     [Header("Move Settings")]
     [SerializeField] private float stoppingDistanceToPlayer;
@@ -22,11 +22,14 @@ public class Enemy : MonoBehaviour
     private NavMeshAgent navAgent;
     [SerializeField] private Transform player;
 
+    private float health;
     private float attackTimer;
     private float bulletDamageMultiplier;
 
     private const string ANIM_PARAM_MOVING = "IsMoving";
     private const string ANIM_PARAM_ATTACKING = "IsShooting";
+
+    public float Health => health;
 
     #region Unity Methods
     private void Awake()
@@ -34,6 +37,11 @@ public class Enemy : MonoBehaviour
         anim = GetComponentInChildren<Animator>();
         TryGetComponent(out navAgent);
         ChangeState(State.Moving);
+    }
+
+    private void Start()
+    {
+        health = startingHealth;
     }
 
     private void Update()
@@ -147,6 +155,18 @@ public class Enemy : MonoBehaviour
         {
             ChangeState(State.Moving);
             return;
+        }
+    }
+    #endregion
+
+    #region Damage
+    public void Damage(float damage)
+    {
+        health -= damage;
+
+        if (health < 0)
+        {
+            Destroy(gameObject);
         }
     }
     #endregion

@@ -119,6 +119,63 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1001 &304850923
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3852671534667916868, guid: cca0af09f20534844a27d842d534362b, type: 3}
+      propertyPath: m_Name
+      value: Bullet
+      objectReference: {fileID: 0}
+    - target: {fileID: 8533259453967940523, guid: cca0af09f20534844a27d842d534362b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -2.26
+      objectReference: {fileID: 0}
+    - target: {fileID: 8533259453967940523, guid: cca0af09f20534844a27d842d534362b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.44
+      objectReference: {fileID: 0}
+    - target: {fileID: 8533259453967940523, guid: cca0af09f20534844a27d842d534362b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1.19
+      objectReference: {fileID: 0}
+    - target: {fileID: 8533259453967940523, guid: cca0af09f20534844a27d842d534362b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8533259453967940523, guid: cca0af09f20534844a27d842d534362b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8533259453967940523, guid: cca0af09f20534844a27d842d534362b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8533259453967940523, guid: cca0af09f20534844a27d842d534362b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8533259453967940523, guid: cca0af09f20534844a27d842d534362b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8533259453967940523, guid: cca0af09f20534844a27d842d534362b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8533259453967940523, guid: cca0af09f20534844a27d842d534362b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: cca0af09f20534844a27d842d534362b, type: 3}
 --- !u!1 &441062410
 GameObject:
   m_ObjectHideFlags: 0
@@ -667,7 +724,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63946eb5cd7750841a959c53ba355cd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
-  spawnCheckRadius: 100
+  startingHealth: 4
   stoppingDistanceToPlayer: 3
   bulletSpawnPoint: {fileID: 1235650922}
   bulletPrefab: {fileID: 6236664591292791679, guid: cca0af09f20534844a27d842d534362b, type: 3}
@@ -1437,3 +1494,4 @@ SceneRoots:
   - {fileID: 1326813441}
   - {fileID: 1596742962}
   - {fileID: 1809039054}
+  - {fileID: 304850923}
