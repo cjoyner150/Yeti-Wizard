@@ -31,11 +31,11 @@ public class Bullet : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         IDamageable damageable = other.GetComponentInParent<IDamageable>();
-        damageable?.Damage(damageComponent.Damage);
+        damageable?.Hit(damageComponent.Damage);
         Destroy(gameObject);
     }
 
-    public void Init(float damage, float launchSpeed)
+    public void Init(int damage, float launchSpeed)
     {
         speed = launchSpeed;
         damageComponent.SetDamage(damage);

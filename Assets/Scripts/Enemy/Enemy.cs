@@ -22,14 +22,14 @@ public class Enemy : MonoBehaviour, IDamageable
     private NavMeshAgent navAgent;
     [SerializeField] private Transform player;
 
-    private float health;
+    private int health;
     private float attackTimer;
-    private float bulletDamageMultiplier;
+    private int bulletDamageMultiplier;
 
     private const string ANIM_PARAM_MOVING = "IsMoving";
     private const string ANIM_PARAM_ATTACKING = "IsShooting";
 
-    public float Health => health;
+    public int Health { get => health; set => health = value; }
 
     #region Unity Methods
     private void Awake()
@@ -63,7 +63,7 @@ public class Enemy : MonoBehaviour, IDamageable
     #endregion
 
     #region Init
-    public void Init(Transform playerTransform, float bulletDamageMult)
+    public void Init(Transform playerTransform, int bulletDamageMult)
     {
         player = playerTransform;
         NavMesh.SamplePosition(Vector2.zero, out NavMeshHit hit, 500f, NavMesh.AllAreas);
@@ -160,15 +160,20 @@ public class Enemy : MonoBehaviour, IDamageable
     #endregion
 
     #region Damage
-    public void Damage(float damage)
+    public void Hit(int damage)
     {
         health -= damage;
 
         if (health < 0)
         {
-            Destroy(gameObject);
+            Die();
         }
     }
+    public void Die()
+    {
+        Destroy(gameObject);
+    }
+
     #endregion
 
     #region Utility

@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class DamageComponent : MonoBehaviour
 {
-    [SerializeField] private float damage;
+    [SerializeField] private int damage;
 
-    public float Damage => damage;
+    public int Damage => damage;
 
-    public void SetDamage(float newDamage)
+    public void SetDamage(int newDamage)
     {
         damage = newDamage;
     }
