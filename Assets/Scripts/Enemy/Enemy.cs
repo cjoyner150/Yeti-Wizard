@@ -23,6 +23,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private Transform player;
 
     private float attackTimer;
+    private float bulletDamageMultiplier;
 
     private const string ANIM_PARAM_MOVING = "IsMoving";
     private const string ANIM_PARAM_ATTACKING = "IsShooting";
@@ -54,11 +55,13 @@ public class Enemy : MonoBehaviour
     #endregion
 
     #region Init
-    public void Init(Transform playerTransform, float spawnRadiusFromOrigin)
+    public void Init(Transform playerTransform, float bulletDamageMult)
     {
         player = playerTransform;
-        NavMesh.SamplePosition(Vector2.zero, out NavMeshHit hit, spawnRadiusFromOrigin, NavMesh.AllAreas);
+        NavMesh.SamplePosition(Vector2.zero, out NavMeshHit hit, 500f, NavMesh.AllAreas);
         navAgent.Warp(hit.position);
+
+        bulletDamageMultiplier = bulletDamageMult;
 
         ChangeState(State.Moving);
     }
@@ -133,7 +136,7 @@ public class Enemy : MonoBehaviour
         if (bulletPrefab == null) return;
 
         Bullet bullet = Instantiate(bulletPrefab, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
-        bullet.Init(bulletDamage, bulletSpeed);
+        bullet.Init(bulletDamage * bulletDamageMultiplier, bulletSpeed);
         bullet.Launch();
 
         navAgent.SetDestination(player.position);

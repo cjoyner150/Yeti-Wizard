@@ -38,7 +38,7 @@ public class Bullet : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public void Init(int damage, float launchSpeed)
+    public void Init(float damage, float launchSpeed)
     {
         speed = launchSpeed;
         damageComponent.SetDamage(damage);
