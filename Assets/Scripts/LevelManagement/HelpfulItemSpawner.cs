@@ -21,9 +21,9 @@ public class HelpfulItemSpawner : MonoBehaviour
             {
                 GameObject go = Instantiate(helpfulItemPrefabs[Random.Range(0, helpfulItemPrefabs.Length)], loc.position, loc.rotation);
 
+                DraggableItem[] draggables = go.GetComponentsInChildren<DraggableItem>();
+                foreach(var draggable in draggables) draggable.InitItem();
             }
-
-
         }
     }
 }
