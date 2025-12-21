@@ -17,6 +17,18 @@ public class PlayerController : MonoBehaviour, IDamageable
     public Transform cameraHolder;
     public float mouseSensitivity = 10f;
 
+    [Header("Shooting")]
+    [SerializeField] GameObject bulletPrefab;
+    [SerializeField] Transform gun;
+    [SerializeField] Transform bulletSpawnLoc;
+    [SerializeField] float bulletSpeed;
+    [SerializeField] LayerMask shootableLayers;
+    [SerializeField] float shootCooldown;
+    
+    float shootTimer = 0;
+    bool shootOnCD => shootTimer > 0;
+
+
     [Header("Force")]
     public float pickupForce = 15f;
     public float forceMultiplier = 1f;
@@ -57,6 +69,10 @@ public class PlayerController : MonoBehaviour, IDamageable
     [Header("Events")]
     [SerializeField] VoidEventSO freezeEvent;
     [SerializeField] VoidEventSO unfreezeEvent;
+
+    [Header("Input")]
+    PlayerInputMap inputControls;
+    InputAction fire;
     
     // Private vars
     private float currentHoldDistance;
@@ -87,12 +103,24 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         freezeEvent.onEventRaised += Freeze;
         unfreezeEvent.onEventRaised += Unfreeze;
+
+        fire.performed += Shoot;
+        fire.Enable();
     }
 
     private void OnDisable()
     {
         freezeEvent.onEventRaised -= Freeze;
         unfreezeEvent.onEventRaised -= Unfreeze;
+
+        fire.performed -= Shoot;
+        fire.Disable();
+    }
+
+    void Awake()
+    {
+        inputControls = new PlayerInputMap();
+        fire = inputControls.Player.Fire;
     }
 
     void Start()
@@ -121,6 +149,12 @@ public class PlayerController : MonoBehaviour, IDamageable
         HandleJump();
         
         HandlePickupInput();
+        HandleGunRotate();
+
+        if (shootOnCD)
+        {
+            shootTimer -= Time.deltaTime;
+        }
         
         if (heldObjectRB != null)
         {
@@ -406,6 +440,38 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     #endregion
 
+    #region Shooting
+
+    void Shoot(InputAction.CallbackContext ctx)
+    {
+        if (shootOnCD || !IsShootingMode()) return;
+
+        GameObject bulletGO = Instantiate(bulletPrefab, bulletSpawnLoc.position, bulletSpawnLoc.rotation);
+
+        Bullet bullet = bulletGO.GetComponent<Bullet>();
+        bullet.Init(1, bulletSpeed);
+        bullet.Launch();
+
+        shootTimer = shootCooldown;
+    }
+
+    void HandleGunRotate()
+    {
+        Physics.Raycast(cameraHolder.position, cameraHolder.transform.forward, out RaycastHit hit, 50, shootableLayers);
+
+        if (hit.collider != null)
+        {
+            gun.forward = Vector3.Slerp(gun.forward, (hit.point - gun.position).normalized, Time.deltaTime * 5);
+        }
+        else
+        {
+            gun.forward = Vector3.Slerp(gun.forward, (cameraHolder.position + (cameraHolder.transform.forward * 50)) - gun.position, Time.deltaTime * 5);
+        }
+    }
+
+
+    #endregion
+
     #region Mode Switching
 
     public void SwitchToCombatMode()
@@ -414,13 +480,17 @@ public class PlayerController : MonoBehaviour, IDamageable
         {
             DropObject();
         }
-        
+
+        gun.gameObject.SetActive(true);
+
         isCombatPhase = true;
         Debug.Log("Player: Switched to Shooting Mode");
     }
 
     public void SwitchToPrepMode()
     {
+        gun.gameObject.SetActive(false);
+
         isCombatPhase = false;
         Debug.Log("Player: Switched to Pickup Mode");
     }

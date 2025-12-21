@@ -7,6 +7,7 @@ public class EnemySpawner : MonoBehaviour
 
     [SerializeField] Transform[] spawnLocations;
     [SerializeField] GameObject player;
+    [SerializeField] Transform goal;
 
     WaveConfig currentConfig;
     float heavyEnemyChance;
@@ -37,15 +38,15 @@ public class EnemySpawner : MonoBehaviour
                 if (rand <= heavyEnemyChance)
                 {
                     GameObject go = Instantiate(heavyEnemyPrefab, t.position, t.rotation);
-                    //Enemy enemy = go.GetComponent<Enemy>();
-                    //enemy.Init(player.transform, currentConfig.enemyDamageMultiplier);
+                    Enemy enemy = go.GetComponent<Enemy>();
+                    enemy.Init(goal, currentConfig.enemyDamageMultiplier);
                     count++;
                 }
                 else
                 {
                     GameObject go = Instantiate(enemyPrefab, t.position, t.rotation);
-                    //Enemy enemy = go.GetComponent<Enemy>();
-                    //enemy.Init(player.transform, currentConfig.enemyDamageMultiplier);
+                    Enemy enemy = go.GetComponent<Enemy>();
+                    enemy.Init(goal, currentConfig.enemyDamageMultiplier);
                     count++;
                 }
             }

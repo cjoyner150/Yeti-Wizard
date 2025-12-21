@@ -22,7 +22,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 718507166265296452, guid: 68dba7664aae6fd469a7543cd1fd154f, type: 3}
       propertyPath: impulseDamageThreshold
-      value: 60
+      value: 150
       objectReference: {fileID: 0}
     - target: {fileID: 718507166265296452, guid: 68dba7664aae6fd469a7543cd1fd154f, type: 3}
       propertyPath: shatterColliders.Array.size
