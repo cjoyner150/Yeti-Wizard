@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.Playables;
 
@@ -46,6 +47,9 @@ public class LevelManager: MonoBehaviour
 
     static LevelManager instance;
 
+    float waveTimer;
+    float waveCD = 120f;
+
     private void OnEnable()
     {
         onWaveComplete.onEventRaised += OnWaveComplete;
@@ -89,6 +93,15 @@ public class LevelManager: MonoBehaviour
             if (prepTimer <= 0)
             {
                 Unfreeze();
+            }
+        }
+        else
+        {
+            waveTimer -= Time.deltaTime;
+
+            if (waveTimer <= 0)
+            {
+                currentAliveEnemies = 0;
             }
         }
     }
@@ -179,6 +192,8 @@ public class LevelManager: MonoBehaviour
         source.loop = true;
         source.clip = combatLoop;
         source.Play();
+
+        waveTimer = waveCD;
     }
 
     private void OnEnemyDied()

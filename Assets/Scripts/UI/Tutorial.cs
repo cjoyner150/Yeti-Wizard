@@ -1,8 +1,11 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Playables;
 
 public class Tutorial : MonoBehaviour
 {
+
+    [SerializeField] PlayableDirector direct;
     private void OnEnable()
     {
         Time.timeScale = 0f;
@@ -17,5 +20,7 @@ public class Tutorial : MonoBehaviour
     {
         Time.timeScale = 1f;
         gameObject.SetActive(false);
+
+        direct.Play();
     }
 }
