@@ -138,12 +138,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   startingHealth: 4
   damageMult: 1
+  spawnDistance: 100
+  invincibleTimeAfterSpawn: 3
   stoppingDistanceToTarget: 4
   bulletSpawnPoint: {fileID: 8627735067651917250}
   bulletPrefab: {fileID: 6236664591292791679, guid: cca0af09f20534844a27d842d534362b, type: 3}
   attackRate: 2
   bulletSpeed: 5
   bulletDamage: 1
+  attackRotationMax: 15
   despawnTime: 5
   deathEventSO: {fileID: 11400000, guid: b547e2a591461be4cbe1d3fed2b727c1, type: 2}
   freezeEventSO: {fileID: 11400000, guid: bdceff51fbc343b4f918e05d335a5c41, type: 2}
