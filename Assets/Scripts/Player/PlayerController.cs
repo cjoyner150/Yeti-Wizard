@@ -22,6 +22,8 @@ public class PlayerController : MonoBehaviour, IDamageable
     [Header("Shooting")]
     [SerializeField] GameObject bulletPrefab;
     [SerializeField] Transform gun;
+    [SerializeField] GameObject gunMesh;
+    [SerializeField] GameObject watchSocket;
     [SerializeField] Transform bulletSpawnLoc;
     [SerializeField] float bulletSpeed;
     [SerializeField] LayerMask shootableLayers;
@@ -66,7 +68,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     [SerializeField] LayerMask blocksHolding;
 
     [Header("Body")]
-    [SerializeField] private Transform body;
+    [SerializeField] private Animator anim;
     
     [Header("Visual Feedback")]
     public AudioClip pickupSound;
@@ -92,7 +94,6 @@ public class PlayerController : MonoBehaviour, IDamageable
     private Rigidbody rb;
     private Rigidbody heldObjectRB;
     private DraggableItem heldObject;
-    private Animator bodyAnim;
     private float xRotation;
     float yRotation;
     private float currentMoveSpeed;
@@ -137,8 +138,6 @@ public class PlayerController : MonoBehaviour, IDamageable
         fire = inputControls.Player.Fire;
 
         cam = Camera.main;
-
-        bodyAnim = body.GetComponentInChildren<Animator>();
     }
 
     void Start()
@@ -157,9 +156,6 @@ public class PlayerController : MonoBehaviour, IDamageable
         {
             audioSource = gameObject.AddComponent<AudioSource>();
         }
-
-        body.SetParent(cam.transform, true);
-        body.localPosition = new(0.005f, -1.6f, -0.255f);
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -230,8 +226,8 @@ public class PlayerController : MonoBehaviour, IDamageable
 
         rb.AddForce(velocityChange, ForceMode.VelocityChange);
 
-        if (moveDir == Vector3.zero) bodyAnim.SetBool("IsMoving", false);
-        else bodyAnim.SetBool("IsMoving", true);
+        if (moveDir == Vector3.zero) anim.SetBool("IsMoving", false);
+        else anim.SetBool("IsMoving", true);
     }
 
     void CalculateCurrentSpeed()
@@ -361,7 +357,7 @@ public class PlayerController : MonoBehaviour, IDamageable
                 Beam2.enabled = true;
                 heldObject.SetPickupVFX(true);
 
-                bodyAnim.SetTrigger("Staff");
+                anim.SetTrigger("Staff");
 
                 if (pickupSound != null && audioSource != null)
                 {
@@ -505,7 +501,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         bullet.Init(1, bulletSpeed);
         bullet.Launch();
         if (gunshotSFXPlayer != null) gunshotSFXPlayer.Play();
-        bodyAnim.SetTrigger("Shoot");
+        anim.SetTrigger("Shoot");
 
         shootTimer = shootCooldown;
     }
@@ -536,6 +532,10 @@ public class PlayerController : MonoBehaviour, IDamageable
         }
 
         gun.gameObject.SetActive(true);
+        Invoke(nameof(EnableGun), .5f);
+        Invoke(nameof(DisableWatch), .5f);
+
+        anim.SetTrigger("Reload");
 
         isCombatPhase = true;
         //Debug.Log("Player: Switched to Shooting Mode");
@@ -545,9 +545,18 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         gun.gameObject.SetActive(false);
 
+        anim.SetTrigger("Reload");
+
         isCombatPhase = false;
+        Invoke(nameof(DisableGun), .5f);
+        Invoke(nameof(EnableWatch), .5f);
         //Debug.Log("Player: Switched to Pickup Mode");
     }
+
+    void DisableGun() => gunMesh.SetActive(false);
+    void DisableWatch() => watchSocket.SetActive(false);
+    void EnableGun() => gunMesh.SetActive(true);
+    void EnableWatch() => watchSocket.SetActive(true);
 
     #endregion
 

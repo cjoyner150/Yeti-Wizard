@@ -5,8 +5,6 @@ using UnityEngine.Playables;
 public class LevelManager: MonoBehaviour
 {
     [Header("Enemy Spawning")]
-    [SerializeField] GameObject enemyPrefab;
-    [SerializeField] GameObject heavyEnemyPrefab;
     [SerializeField] EnemySpawner[] enemySpawners;
     [SerializeField] int enemySpawnIncreaseRate;
     [SerializeField] float heavyEnemySpawnChanceIncreaseRate;
@@ -23,7 +21,8 @@ public class LevelManager: MonoBehaviour
     WaveConfig currentConfig;
 
     [Header("References")]
-    [SerializeField] GameObject player;
+    [SerializeField] Rigidbody player;
+    [SerializeField] Transform playerStart;
     [SerializeField] PlayableDirector startWaveTimeline;
 
     [Header("Events")]
@@ -53,6 +52,9 @@ public class LevelManager: MonoBehaviour
 
     private void Awake()
     {
+        player.position = playerStart.position;
+        player.rotation = playerStart.rotation;
+
         if (instance != null) Destroy(this); 
         else
         {
@@ -102,6 +104,9 @@ public class LevelManager: MonoBehaviour
         }
 
         currentAliveEnemies = spawned;
+
+        player.position = playerStart.position;
+        player.rotation = playerStart.rotation;
     }
 
     void OnWaveComplete()

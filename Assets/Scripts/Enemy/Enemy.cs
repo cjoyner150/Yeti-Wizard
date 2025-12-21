@@ -26,6 +26,8 @@ public class Enemy : MonoBehaviour, IDamageable
     [SerializeField] private float bulletSpeed;
     [SerializeField] private int bulletDamage;
     [SerializeField] private float attackRotationMax;
+    [SerializeField] LayerMask blockables;
+    [SerializeField] float attackRange;
 
     [Header("Death Settings")]
     [SerializeField] private float despawnTime;
@@ -259,7 +261,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
         if (navAgent.pathPending) return;
 
-        if (IsWithinStoppingDistanceFromTarget())
+        if (IsWithinStoppingDistanceFromTarget() && HasLineOfSightOnTarget())
         {
             ChangeState(State.Attacking);
         }
@@ -290,7 +292,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
         if (navAgent.pathPending) return;
 
-        if (!IsWithinStoppingDistanceFromTarget())
+        if (!IsWithinStoppingDistanceFromTarget() || !HasLineOfSightOnTarget())
         {
             ChangeState(State.Moving);
             return;
@@ -397,7 +399,14 @@ public class Enemy : MonoBehaviour, IDamageable
     #region Utility
     private bool IsWithinStoppingDistanceFromTarget()
     {
-        return navAgent.remainingDistance <= stoppingDistanceToTarget;
+        return navAgent.remainingDistance <= attackRange;
+    }
+
+    private bool HasLineOfSightOnTarget()
+    {
+        Physics.Raycast(bulletSpawnPoint.position, (currentTarget.position - bulletSpawnPoint.position).normalized, out RaycastHit hit, blockables);
+
+        return (hit.collider == null);
     }
 
     private void FaceTarget()
