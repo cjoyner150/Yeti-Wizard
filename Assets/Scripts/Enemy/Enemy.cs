@@ -25,6 +25,10 @@ public class Enemy : MonoBehaviour, IDamageable
     [Header("Death Settings")]
     [SerializeField] private float despawnTime;
 
+    [Header("Components")]
+    [SerializeField] private Collider baseCollider;
+    [SerializeField] private Rigidbody[] rigRigidbodies;
+
     [Header("Broadcast Events")]
     [SerializeField] private VoidEventSO deathEventSO;
 
@@ -41,6 +45,7 @@ public class Enemy : MonoBehaviour, IDamageable
     private Transform currentTarget;
     [SerializeField] private Transform goalTarget; // SerializeField is just for testing
     private Animator anim;
+    private Rigidbody rb;
     private NavMeshAgent navAgent;
 
     private const string ANIM_PARAM_MOVING = "IsMoving";
@@ -53,6 +58,7 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         anim = GetComponentInChildren<Animator>();
         TryGetComponent(out navAgent);
+        TryGetComponent(out rb);
     }
 
     private void OnEnable()
@@ -69,9 +75,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private void Start()
     {
-        health = startingHealth;
-        invincibleTimer = invincibleTimeAfterSpawn;
-        //Init(goalTarget, 1); // For Testing Only
+        Init(goalTarget, 1); // For Testing Only
     }
 
     private void Update()
@@ -97,10 +101,14 @@ public class Enemy : MonoBehaviour, IDamageable
     #endregion
 
     #region Init
-    public void Init(Transform goalTransform, int bulletDamageMult)
+    public void Init(Transform goalTransform, int bulletDamageMult, int startHealth = -1)
     {
         currentTarget = goalTarget = goalTransform;
         bulletDamageMultiplier = bulletDamageMult;
+
+        if (startHealth > 0) health = startHealth;
+        else health = startingHealth;
+        invincibleTimer = invincibleTimeAfterSpawn;
 
         Vector3 spawnPos = transform.position + Random.insideUnitSphere * spawnDistance;
         NavMesh.SamplePosition(spawnPos, out NavMeshHit hit, 500f, NavMesh.AllAreas);
@@ -116,6 +124,8 @@ public class Enemy : MonoBehaviour, IDamageable
         switch (state)
         {
             case State.Frozen:
+                SetRagdollKinematic(false);
+                anim.speed = 1;
                 break;
             case State.Moving:
                 navAgent.isStopped = true;
@@ -133,6 +143,8 @@ public class Enemy : MonoBehaviour, IDamageable
         switch (state)
         {
             case State.Frozen:
+                SetRagdollKinematic(true);
+                anim.speed = 0;
                 break;
             case State.Moving:
                 navAgent.isStopped = false;
@@ -143,10 +155,11 @@ public class Enemy : MonoBehaviour, IDamageable
                 anim.SetBool(ANIM_PARAM_ATTACKING, true);
                 break;
             case State.Dead:
-                navAgent.isStopped = true;
                 navAgent.enabled = false;
                 anim.enabled = false;
+                baseCollider.enabled = false;
                 despawnTimer = despawnTime;
+                deathEventSO.RaiseEvent();
                 break;
         }
     }
@@ -170,7 +183,16 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private void Unfreeze()
     {
-        ChangeState(State.Moving);
+        if (health > 0) ChangeState(State.Moving);
+        else ChangeState(State.Dead);
+    }
+
+    private void SetRagdollKinematic(bool value)
+    {
+        foreach (Rigidbody rb in rigRigidbodies)
+        {
+            rb.isKinematic = value;
+        }
     }
     #endregion
 
@@ -270,7 +292,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public void Hit(int damage)
     {
-        if (state == State.Dead) return;
+        if (state == State.Dead || state == State.Frozen) return;
 
         health -= damage;
 
