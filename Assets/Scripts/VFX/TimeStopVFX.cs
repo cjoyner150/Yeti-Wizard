@@ -3,11 +3,9 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.InputSystem;
 
-public class TimeStopPostProcess_InputSystem : MonoBehaviour
+public class TimeStopVFX : MonoBehaviour
 {
-    [Header("Input")]
-    [Tooltip("Key used to toggle time stop")]
-    public Key toggleKey = Key.T;
+    
 
     [Header("Transition")]
     public float transitionTime = 0.25f;
@@ -36,43 +34,27 @@ public class TimeStopPostProcess_InputSystem : MonoBehaviour
     float normalVignette;
     float normalChromatic;
 
-    InputAction toggleAction;
-
-    void Awake()
-    {
-        // Inline InputAction
-        toggleAction = new InputAction(
-            "ToggleTimeStop",
-            InputActionType.Button,
-            binding: $"<Keyboard>/{toggleKey.ToString().ToLower()}"
-        );
-    }
-
-    void OnEnable()
-    {
-        toggleAction.Enable();
-    }
-
-    void OnDisable()
-    {
-        toggleAction.Disable();
-    }
 
     void Start()
     {
+
         volume = FindObjectOfType<Volume>();
+        volume.profile = Instantiate(volume.profile);
 
         if (!volume)
         {
             Debug.LogError("No Volume found in scene.");
-            enabled = false;
             return;
         }
 
-        volume.profile.TryGet(out color);
-        volume.profile.TryGet(out bloom);
-        volume.profile.TryGet(out vignette);
-        volume.profile.TryGet(out chromatic);
+        if (!volume.profile.TryGet(out color))
+            Debug.LogWarning("No ColorAdjustments found");
+        if (!volume.profile.TryGet(out bloom))
+            Debug.LogWarning("No Bloom found");
+        if (!volume.profile.TryGet(out vignette))
+            Debug.LogWarning("No Vignette found");
+        if (!volume.profile.TryGet(out chromatic))
+            Debug.LogWarning("No ChromaticAberration found");
 
         normalSaturation = color.saturation.value;
         normalContrast = color.contrast.value;
@@ -85,15 +67,14 @@ public class TimeStopPostProcess_InputSystem : MonoBehaviour
 
     void Update()
     {
-        if (toggleAction.WasPressedThisFrame())
-        {
-            timeStopped = !timeStopped;
-            Time.timeScale = timeStopped ? 0f : 1f;
-            t = 0f;
-            Debug.Log("Time Change!");
-        }
-
         AnimatePostProcess();
+    }
+
+    public void setTimeStop(bool ts)
+    {
+        timeStopped = ts;
+        Debug.Log("Time vfx = " + ts);
+        t = 0;
     }
 
     void AnimatePostProcess()
@@ -101,7 +82,7 @@ public class TimeStopPostProcess_InputSystem : MonoBehaviour
         if (t >= 1f)
             return;
 
-        t += Time.unscaledDeltaTime / transitionTime;
+        t += Time.deltaTime / transitionTime;
         t = Mathf.Clamp01(t);
 
         float blend = timeStopped ? t : 1f - t;
@@ -111,5 +92,8 @@ public class TimeStopPostProcess_InputSystem : MonoBehaviour
         bloom.intensity.value = Mathf.Lerp(normalBloom, stoppedBloom, blend);
         vignette.intensity.value = Mathf.Lerp(normalVignette, stoppedVignette, blend);
         chromatic.intensity.value = Mathf.Lerp(normalChromatic, stoppedChromatic, blend);
+
+
+        Debug.Log($"Saturation: {color.saturation.value}, Bloom: {bloom.intensity.value}");
     }
 }

@@ -1,0 +1,147 @@
+{
+	"assetNamespace": "fab",
+	"listing":
+	{
+		"averageRating": 0,
+		"createdAt": "",
+		"description": "<p>A game-ready antique mantel clock created for a personal project. It would make a great addition to an old Victorian scene. Suitable for use in game, VR, AR and archviz.</p><p></p><ul><li><p>low-poly</p></li><li><p>6k triangle FBX</p></li><li><p>2k textures</p></li><li><p>Modelled in Blender and textured in Substance Painter.</p><p></p></li></ul><p>Free to download.</p>",
+		"isAiForbidden": false,
+		"isAiGenerated": false,
+		"lastUpdatedAt": "2025-02-24T12:25:47.398989Z",
+		"listingType": "3d-model",
+		"media": "https://media.fab.com/image_previews/gallery_images/a909639a-83a3-4c5b-a2d0-973cf6d4b119/a52acda0-d578-4750-849b-663bc3853ac2.jpeg",
+		"publishedAt": "2024-10-15T17:37:22.716224Z",
+		"reviewCount": 0,
+		"thumbnail": "https://media.fab.com/image_previews/gallery_images/0fcfc805-ccfa-438a-8df4-31849b48fd7d/e1c726d7-8a8a-4617-a1a7-8b3d92326c86.jpeg",
+		"title": "Antique Mantel Clock",
+		"uid": "7b87a384-d0e5-4186-b171-21e8794fe6a2",
+		"updatedAt": "",
+		"user":
+		{
+			"coverImageUrl": "",
+			"profileImageUrl": "",
+			"sellerName": "mtcollings",
+			"uid": "31e6925e-eee9-4940-b386-85045d053c3c"
+		},
+		"tags": [
+			{
+				"name": "Antique",
+				"slug": "antique",
+				"uid": "05c128da-c923-4f5d-b84b-fde612ae6bd4"
+			},
+			{
+				"name": "Pbr",
+				"slug": "pbr",
+				"uid": "080edd3b-d10a-4f32-ace2-30f5baa480dc"
+			},
+			{
+				"name": "Blender",
+				"slug": "blender",
+				"uid": "141666cf-0a09-4718-85fa-f0d54884a525"
+			},
+			{
+				"name": "Hard",
+				"slug": "hard",
+				"uid": "3a0676fe-0af1-4cbf-83c5-e6634dddd3ee"
+			},
+			{
+				"name": "Lowpoly",
+				"slug": "lowpoly",
+				"uid": "451806dc-649e-43b7-9c2e-a54485de14b6"
+			},
+			{
+				"name": "Vintage",
+				"slug": "vintage",
+				"uid": "8a4d973f-aaa6-411d-b342-e09e1f212f63"
+			},
+			{
+				"name": "Painter",
+				"slug": "painter",
+				"uid": "950b1c12-0668-4779-acad-305c85885d7d"
+			},
+			{
+				"name": "Old",
+				"slug": "old",
+				"uid": "975b1521-db01-43ed-a939-c2c2da5027b1"
+			},
+			{
+				"name": "Table",
+				"slug": "table",
+				"uid": "a08c57c8-d431-4f72-84a3-a01c86b73d44"
+			},
+			{
+				"name": "Vr",
+				"slug": "vr",
+				"uid": "af5c9726-ee49-4eea-b3f5-6ccd08ca9992"
+			},
+			{
+				"name": "Surface",
+				"slug": "surface",
+				"uid": "bda913d0-d91d-42d8-b0ac-1fd842b255ca"
+			},
+			{
+				"name": "Clock",
+				"slug": "clock",
+				"uid": "e12ac8a7-104f-4b60-836d-b6df810b4c87"
+			},
+			{
+				"name": "Victorian",
+				"slug": "victorian",
+				"uid": "f5815f31-6e69-45cf-9e3e-292686e0045d"
+			}
+		],
+		"category":
+		{
+			"name": "Furniture & Fixtures",
+			"path": "furniture-fixtures",
+			"slug": "furniture-fixtures",
+			"uid": "3da1d2bd-49b4-4bc5-90e5-d31dadec3bd0"
+		},
+		"assetFormats": [
+			{
+				"assetFormatType":
+				{
+					"name": "FBX",
+					"groupName": "3D Exchange Formats",
+					"code": "fbx",
+					"icon": "cube",
+					"extensions": [
+						"fbx"
+					]
+				}
+			},
+			{
+				"assetFormatType":
+				{
+					"name": "Converted Files",
+					"groupName": "",
+					"code": "converted-files",
+					"icon": "cube",
+					"extensions": [
+						"gltf",
+						"glb",
+						"usdz"
+					]
+				}
+			}
+		],
+		"_PluginMetas":
+		{
+			"apiDataVersion": "0.0.1",
+			"entitlementUid": "3b76c374-7335-49a7-a5e6-56ce70b822f4",
+			"cacheSize": 0,
+			"downloaded": []
+		}
+	},
+	"target": "",
+	"quality": "",
+	"format": "fbx",
+	"fileId": "9d2f82ae-7318-4497-b1c3-b5f94bd80a3b",
+	"platformIncluded": "",
+	"distributionPointBaseUrls": [],
+	"distributionMethod": "",
+	"entitlementUid": "3b76c374-7335-49a7-a5e6-56ce70b822f4",
+	"invertedNormal": false,
+	"isConverted": false,
+	"isQuixel": false
+}
