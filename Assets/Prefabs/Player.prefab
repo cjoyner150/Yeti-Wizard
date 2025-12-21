@@ -241,6 +241,8 @@ MonoBehaviour:
   blocksHolding:
     serializedVersion: 2
     m_Bits: 65
+  body: {fileID: 0}
+  bodyAnim: {fileID: 0}
   pickupSound: {fileID: 8300000, guid: 991fccf874a9606418cbbae8b8efa62a, type: 3}
   throwSound: {fileID: 8300000, guid: 5bc03164e110eb9498a2ce446af67704, type: 3}
   freezeEvent: {fileID: 11400000, guid: bdceff51fbc343b4f918e05d335a5c41, type: 2}
