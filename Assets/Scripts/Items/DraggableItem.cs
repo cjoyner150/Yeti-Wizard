@@ -3,14 +3,23 @@ using UnityEngine;
 
 public class DraggableItem : MonoBehaviour, IDamageable
 {
+    [Header("Destructible")]
     [SerializeField] protected Collider[] shatterColliders;
     [SerializeField] protected Transform shatterExplosionPoint;
+    [SerializeField] protected float explosionForce;
+    [SerializeField] protected float explosionRange;
     [SerializeField] protected bool isDestructible;
-    [SerializeField] protected float velocityThreshold = 10;
+
+    [Header("Draggable")]
+    [SerializeField] protected float impulseDamageThreshold = 10;
     [SerializeField] protected float yOffset = 0;
     [SerializeField] protected int maxHP = 1;
     [SerializeField] protected VoidEventSO freezeEvent;
     [SerializeField] protected VoidEventSO unfreezeEvent;
+    [SerializeField] GameObject lightningPrefab;
+
+    GameObject lightningParticle;
+    
 
     protected Rigidbody rb;
     protected Collider col;
@@ -44,9 +53,12 @@ public class DraggableItem : MonoBehaviour, IDamageable
         rb = GetComponent<Rigidbody>();
         col = GetComponent<Collider>();
 
-        foreach (var collider in shatterColliders)
+        if (isDestructible)
         {
-            collider.enabled = false;
+            foreach (var collider in shatterColliders)
+            {
+                collider.enabled = false;
+            }
         }
 
         Health = maxHP;
@@ -142,13 +154,15 @@ public class DraggableItem : MonoBehaviour, IDamageable
 
                 rigidBody.isKinematic = false;
                 rigidBody.useGravity = true;
+                rigidBody.interpolation = RigidbodyInterpolation.Interpolate;
+                rigidBody.collisionDetectionMode = CollisionDetectionMode.Continuous;
 
-                StartCoroutine(AddExplosionForceToBody(rigidBody));
+                rigidBody.AddExplosionForce(explosionForce, shatterExplosionPoint.position, explosionRange);
             }
 
             currentState = DraggableState.shattered;
 
-            Debug.Log($"{name} has died");
+            //Debug.Log($"{name} has died");
         }
         else
         {
@@ -158,10 +172,26 @@ public class DraggableItem : MonoBehaviour, IDamageable
 
     }
 
-    IEnumerator AddExplosionForceToBody(Rigidbody body)
+    public void SetPickupVFX(bool isOn)
     {
-        yield return new WaitForSeconds(.5f);
-        body.AddExplosionForce(1f, shatterExplosionPoint.position, 3f);
+        float str = isOn ? 2f : 0f;
+
+        MeshRenderer[] renderers = GetComponentsInChildren<MeshRenderer>();
+
+        foreach (MeshRenderer renderer in renderers)
+        {
+            renderer.material.SetFloat("_Highlight_Strength", str);
+        }
+           
+
+        if (isOn)
+        {
+            lightningParticle = Instantiate(lightningPrefab, transform.position, Quaternion.identity, transform);
+        }
+        else
+        {
+            Destroy(lightningParticle);
+        }
     }
 
     public virtual void Hit(int damage)
@@ -175,7 +205,8 @@ public class DraggableItem : MonoBehaviour, IDamageable
 
     protected virtual void OnCollisionEnter(Collision collision)
     {
-        if (collision.relativeVelocity.magnitude > velocityThreshold)
+        Debug.Log($"{name} was hit with {collision.impulse.magnitude} impulse");
+        if (collision.impulse.magnitude > impulseDamageThreshold && !frozen)
         {
             Hit(1);
         }

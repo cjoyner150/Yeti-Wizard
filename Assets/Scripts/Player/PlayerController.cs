@@ -17,6 +17,18 @@ public class PlayerController : MonoBehaviour, IDamageable
     public Transform cameraHolder;
     public float mouseSensitivity = 10f;
 
+    [Header("Shooting")]
+    [SerializeField] GameObject bulletPrefab;
+    [SerializeField] Transform gun;
+    [SerializeField] Transform bulletSpawnLoc;
+    [SerializeField] float bulletSpeed;
+    [SerializeField] LayerMask shootableLayers;
+    [SerializeField] float shootCooldown;
+    
+    float shootTimer = 0;
+    bool shootOnCD => shootTimer > 0;
+
+
     [Header("Force")]
     public float pickupForce = 15f;
     public float forceMultiplier = 1f;
@@ -28,6 +40,10 @@ public class PlayerController : MonoBehaviour, IDamageable
     public float maxHoldDistance = 6f;
     public float pickupRange = 6f;
     public float maxHoldDistanceFromCamera = 8f;
+    public GameObject lineStart;
+    public GameObject lineEnd;
+    public LineRenderer Beam1;
+    public LineRenderer Beam2;
 
     [Header("Weight System")]
     public float minMoveSpeed = 2f;
@@ -45,6 +61,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     [Header("Pickup & Throw")]
     public float throwForce = 15f;
+    [SerializeField] LayerMask blocksHolding;
     
     [Header("Visual Feedback")]
     public AudioClip pickupSound;
@@ -54,6 +71,10 @@ public class PlayerController : MonoBehaviour, IDamageable
     [Header("Events")]
     [SerializeField] VoidEventSO freezeEvent;
     [SerializeField] VoidEventSO unfreezeEvent;
+
+    [Header("Input")]
+    PlayerInputMap inputControls;
+    InputAction fire;
     
     // Private vars
     private float currentHoldDistance;
@@ -84,12 +105,24 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         freezeEvent.onEventRaised += Freeze;
         unfreezeEvent.onEventRaised += Unfreeze;
+
+        fire.performed += Shoot;
+        fire.Enable();
     }
 
     private void OnDisable()
     {
         freezeEvent.onEventRaised -= Freeze;
         unfreezeEvent.onEventRaised -= Unfreeze;
+
+        fire.performed -= Shoot;
+        fire.Disable();
+    }
+
+    void Awake()
+    {
+        inputControls = new PlayerInputMap();
+        fire = inputControls.Player.Fire;
     }
 
     void Start()
@@ -118,6 +151,12 @@ public class PlayerController : MonoBehaviour, IDamageable
         HandleJump();
         
         HandlePickupInput();
+        HandleGunRotate();
+
+        if (shootOnCD)
+        {
+            shootTimer -= Time.deltaTime;
+        }
         
         if (heldObjectRB != null)
         {
@@ -223,14 +262,24 @@ public class PlayerController : MonoBehaviour, IDamageable
         if (Mouse.current.rightButton.wasPressedThisFrame)
         {
             if (heldObjectRB == null)
+            {
                 TryPickup();
+                //Debug.Log("Input pickup item");
+            }
             else
+            {
                 DropObject();
+                //Debug.Log("Input drop item");
+            }
         }
         
         if (heldObjectRB != null && Mouse.current.leftButton.wasPressedThisFrame && isCombatPhase)
         {
             ThrowObject();
+        }
+        if (heldObject)
+        {
+            SetLazerPoints();
         }
     }
 
@@ -267,7 +316,11 @@ public class PlayerController : MonoBehaviour, IDamageable
                 heldObjectRB.linearDamping = 10f;
                 heldObjectRB.angularDamping = 5f;
                 currentHoldDistance = Vector3.Distance(cameraHolder.position, heldObjectRB.position);
-                
+
+                Beam1.enabled = true;
+                Beam2.enabled = true;
+                heldObject.SetPickupVFX(true);
+
                 if (pickupSound != null && audioSource != null)
                 {
                     audioSource.PlayOneShot(pickupSound);
@@ -275,11 +328,11 @@ public class PlayerController : MonoBehaviour, IDamageable
                 
                 if (heldObjectMass >= heavyThreshold)
                 {
-                    Debug.Log($"Picked up HEAVY object: {heldObjectRB.gameObject.name} (Mass: {heldObjectMass})");
+                    //Debug.Log($"Picked up HEAVY object: {heldObjectRB.gameObject.name} (Mass: {heldObjectMass})");
                 }
                 else
                 {
-                    Debug.Log($"Picked up: {heldObjectRB.gameObject.name} (Mass: {heldObjectMass})");
+                   // Debug.Log($"Picked up: {heldObjectRB.gameObject.name} (Mass: {heldObjectMass})");
                 }
             }
         }
@@ -289,6 +342,8 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         if (heldObjectRB == null) return;
 
+        heldObject.SetPickupVFX(false);
+
         heldObject.DropItem();
 
         heldObjectRB.linearDamping = 0f;
@@ -296,8 +351,12 @@ public class PlayerController : MonoBehaviour, IDamageable
         heldObjectMass = 0f;
         heldObjectRB = null;
         heldObject = null;
-        
-        Debug.Log("Dropped object");
+
+        Beam1.enabled = false;
+        Beam2.enabled = false;
+
+
+        //Debug.Log("Dropped object");
     }
 
     void CheckAutoDrop()
@@ -316,7 +375,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         Ray ray = new Ray(cameraHolder.position, (heldObjectRB.position - cameraHolder.position).normalized);
         RaycastHit hit;
         
-        if (Physics.Raycast(ray, out hit, distanceToObject))
+        if (Physics.Raycast(ray, out hit, distanceToObject, blocksHolding))
         {
             if (hit.rigidbody != heldObjectRB && !hit.collider.isTrigger)
             {
@@ -340,15 +399,10 @@ public class PlayerController : MonoBehaviour, IDamageable
         {
             audioSource.PlayOneShot(throwSound);
         }
+
+        DropObject();
         
-        heldObjectRB.useGravity = true;
-        heldObjectRB.linearDamping = 0f;
-        heldObjectRB.angularDamping = 0.05f;
-        heldObjectMass = 0f;
-        heldObjectRB = null;
-        heldObject = null;
-        
-        Debug.Log($"Threw object with force: {massAdjustedForce:F1}");
+        //Debug.Log($"Threw object with force: {massAdjustedForce:F1}");
     }
 
     void HandleHeldObject()
@@ -384,6 +438,49 @@ public class PlayerController : MonoBehaviour, IDamageable
         }
     }
 
+    void SetLazerPoints()
+    {
+        if (heldObject)
+        {
+            lineEnd.transform.position = heldObject.transform.position;
+        }
+        
+         
+    }
+
+    #endregion
+
+    #region Shooting
+
+    void Shoot(InputAction.CallbackContext ctx)
+    {
+        if (heldObjectRB != null) return;
+        if (shootOnCD || !IsShootingMode()) return;
+
+        GameObject bulletGO = Instantiate(bulletPrefab, bulletSpawnLoc.position, bulletSpawnLoc.rotation);
+
+        Bullet bullet = bulletGO.GetComponent<Bullet>();
+        bullet.Init(1, bulletSpeed);
+        bullet.Launch();
+
+        shootTimer = shootCooldown;
+    }
+
+    void HandleGunRotate()
+    {
+        Physics.Raycast(cameraHolder.position, cameraHolder.transform.forward, out RaycastHit hit, 50, shootableLayers);
+
+        if (hit.collider != null)
+        {
+            gun.forward = Vector3.Slerp(gun.forward, (hit.point - gun.position).normalized, Time.deltaTime * 5);
+        }
+        else
+        {
+            gun.forward = Vector3.Slerp(gun.forward, (cameraHolder.position + (cameraHolder.transform.forward * 50)) - gun.position, Time.deltaTime * 5);
+        }
+    }
+
+
     #endregion
 
     #region Mode Switching
@@ -394,15 +491,19 @@ public class PlayerController : MonoBehaviour, IDamageable
         {
             DropObject();
         }
-        
+
+        gun.gameObject.SetActive(true);
+
         isCombatPhase = true;
-        Debug.Log("Player: Switched to Shooting Mode");
+        //Debug.Log("Player: Switched to Shooting Mode");
     }
 
     public void SwitchToPrepMode()
     {
+        gun.gameObject.SetActive(false);
+
         isCombatPhase = false;
-        Debug.Log("Player: Switched to Pickup Mode");
+        //Debug.Log("Player: Switched to Pickup Mode");
     }
 
     #endregion
@@ -422,12 +523,12 @@ public class PlayerController : MonoBehaviour, IDamageable
 
         CheckForDamage(collision);
     }
-
+    
     void CheckForDamage(Collision collision)
     {
         if (isInvincible || currentHealth <= 0) return;
 
-        float impactForce = collision.relativeVelocity.magnitude;
+        float impactForce = collision.impulse.magnitude;
         
         if (impactForce >= damageThreshold)
         {
