@@ -45,7 +45,6 @@ public class Enemy : MonoBehaviour, IDamageable
     private Transform currentTarget;
     [SerializeField] private Transform goalTarget; // SerializeField is just for testing
     private Animator anim;
-    private Rigidbody rb;
     private NavMeshAgent navAgent;
 
     private const string ANIM_PARAM_MOVING = "IsMoving";
@@ -58,7 +57,6 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         anim = GetComponentInChildren<Animator>();
         TryGetComponent(out navAgent);
-        TryGetComponent(out rb);
     }
 
     private void OnEnable()
@@ -73,10 +71,10 @@ public class Enemy : MonoBehaviour, IDamageable
         unfreezeEventSO.onEventRaised -= Unfreeze;
     }
 
-    //private void Start()
-    //{
-    //    Init(goalTarget, 1); // For Testing Only
-    //}
+    private void Start()
+    {
+        Init(goalTarget, 1); // For Testing Only
+    }
 
     private void Update()
     {
@@ -110,11 +108,22 @@ public class Enemy : MonoBehaviour, IDamageable
         else health = startingHealth;
         invincibleTimer = invincibleTimeAfterSpawn;
 
+        SetRagdollParts();
+
         Vector3 spawnPos = transform.position + Random.insideUnitSphere * spawnDistance;
         NavMesh.SamplePosition(spawnPos, out NavMeshHit hit, 500f, NavMesh.AllAreas);
         navAgent.Warp(hit.position);
 
-        ChangeState(State.Frozen); // Change to Frozen; Moving for testing only
+        ChangeState(State.Moving); // Change to Frozen; Moving for testing only
+    }
+
+    private void SetRagdollParts()
+    {
+        EnemyRagdollPart[] ragdollParts = GetComponentsInChildren<EnemyRagdollPart>();
+        foreach (EnemyRagdollPart part in ragdollParts)
+        {
+            part.DamageMult = damageMult;
+        }
     }
     #endregion
 
@@ -159,7 +168,8 @@ public class Enemy : MonoBehaviour, IDamageable
                 anim.enabled = false;
                 baseCollider.enabled = false;
                 despawnTimer = despawnTime;
-                deathEventSO.RaiseEvent();
+                deathEventSO.RaiseEvent(); 
+                //SetRagdollRigidbodies(true);
                 break;
         }
     }
@@ -185,14 +195,6 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         if (health > 0) ChangeState(State.Moving);
         else ChangeState(State.Dead);
-    }
-
-    private void SetRagdollKinematic(bool value)
-    {
-        foreach (Rigidbody rb in rigRigidbodies)
-        {
-            rb.isKinematic = value;
-        }
     }
     #endregion
 
@@ -301,6 +303,13 @@ public class Enemy : MonoBehaviour, IDamageable
             Die();
         }
     }
+
+    public void HitFromPart(int damage)
+    {
+        if (invincibleTimer > 0) return;
+
+        Hit(damage);
+    }
     #endregion
 
     #region Death
@@ -318,6 +327,16 @@ public class Enemy : MonoBehaviour, IDamageable
         }
 
         Destroy(gameObject);
+    }
+    #endregion
+
+    #region Ragdoll
+    private void SetRagdollKinematic(bool value)
+    {
+        foreach (Rigidbody rb in rigRigidbodies)
+        {
+            rb.isKinematic = value;
+        }
     }
     #endregion
 
