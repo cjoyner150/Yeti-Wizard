@@ -73,10 +73,10 @@ public class Enemy : MonoBehaviour, IDamageable
         unfreezeEventSO.onEventRaised -= Unfreeze;
     }
 
-    private void Start()
-    {
-        Init(goalTarget, 1); // For Testing Only
-    }
+    //private void Start()
+    //{
+    //    Init(goalTarget, 1); // For Testing Only
+    //}
 
     private void Update()
     {
@@ -114,7 +114,7 @@ public class Enemy : MonoBehaviour, IDamageable
         NavMesh.SamplePosition(spawnPos, out NavMeshHit hit, 500f, NavMesh.AllAreas);
         navAgent.Warp(hit.position);
 
-        ChangeState(State.Moving); // Change to Frozen; Moving for testing only
+        ChangeState(State.Frozen); // Change to Frozen; Moving for testing only
     }
     #endregion
 
