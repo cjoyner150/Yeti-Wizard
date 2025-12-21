@@ -6,6 +6,7 @@ public class Enemy : MonoBehaviour, IDamageable
     [Header("Health Settings")]
     [SerializeField] private int startingHealth;
     [SerializeField] private float damageMult;
+    [SerializeField] private float damageVelocityThreshold;
 
     [Header("Spawn Settings")]
     [SerializeField] private float spawnDistance;
@@ -123,6 +124,7 @@ public class Enemy : MonoBehaviour, IDamageable
         foreach (EnemyRagdollPart part in ragdollParts)
         {
             part.DamageMult = damageMult;
+            part.DamageVelocityThreshold = damageVelocityThreshold;
         }
     }
     #endregion
@@ -258,6 +260,8 @@ public class Enemy : MonoBehaviour, IDamageable
             int damage;
             if (!hitRigidbody.TryGetComponent(out DamageComponent dmgComponent))
             {
+                if (hitRigidbody.linearVelocity.magnitude < damageVelocityThreshold) return;
+
                 damage = Mathf.RoundToInt(hitRigidbody.linearVelocity.magnitude * damageMult);
             }
             else damage = dmgComponent.Damage;
