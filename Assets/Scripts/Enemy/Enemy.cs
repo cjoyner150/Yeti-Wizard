@@ -34,6 +34,10 @@ public class Enemy : MonoBehaviour, IDamageable
     [SerializeField] private Collider baseCollider;
     [SerializeField] private Rigidbody[] rigRigidbodies;
 
+    [Header("Audio")]
+    [SerializeField] private SFXPlayer gunshotSFXPlayer;
+    [SerializeField] private SFXPlayer deathSFXPlayer;
+
     [Header("Broadcast Events")]
     [SerializeField] private VoidEventSO deathEventSO;
 
@@ -188,8 +192,8 @@ public class Enemy : MonoBehaviour, IDamageable
                 anim.enabled = false;
                 baseCollider.enabled = false;
                 despawnTimer = despawnTime;
-                deathEventSO.RaiseEvent(); 
-                //SetRagdollRigidbodies(true);
+                deathEventSO.RaiseEvent();
+                deathSFXPlayer.Play();
                 break;
         }
     }
@@ -280,6 +284,7 @@ public class Enemy : MonoBehaviour, IDamageable
         Bullet bullet = Instantiate(bulletPrefab, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
         bullet.Init(bulletDamage * bulletDamageMultiplier, bulletSpeed);
         bullet.Launch();
+        gunshotSFXPlayer.Play();
 
         navAgent.SetDestination(currentTarget.position);
 
