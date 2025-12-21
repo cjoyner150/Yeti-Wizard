@@ -126,7 +126,7 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _Highlight_Size: 8
-    - _Highlight_Strength: 2
+    - _Highlight_Strength: 0
     - _Max: 1
     - _Metallic: 0
     - _Min: 0.2
@@ -138,7 +138,7 @@ Material:
     - _Shades: -0.29
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
-    - _Snow_Intensity: 1.24
+    - _Snow_Intensity: 0
     - _Snow_Opacity: 1
     - _Snow_Tiling: 1
     - _SpecularHighlights: 1

@@ -6,11 +6,15 @@ public class DraggableItem : MonoBehaviour, IDamageable
     [SerializeField] protected Collider[] shatterColliders;
     [SerializeField] protected Transform shatterExplosionPoint;
     [SerializeField] protected bool isDestructible;
-    [SerializeField] protected float velocityThreshold = 10;
+    [SerializeField] protected float impulseDamageThreshold = 10;
     [SerializeField] protected float yOffset = 0;
     [SerializeField] protected int maxHP = 1;
     [SerializeField] protected VoidEventSO freezeEvent;
     [SerializeField] protected VoidEventSO unfreezeEvent;
+    [SerializeField] GameObject lightningPrefab;
+
+    GameObject lightningParticle;
+    
 
     protected Rigidbody rb;
     protected Collider col;
@@ -44,9 +48,12 @@ public class DraggableItem : MonoBehaviour, IDamageable
         rb = GetComponent<Rigidbody>();
         col = GetComponent<Collider>();
 
-        foreach (var collider in shatterColliders)
+        if (isDestructible)
         {
-            collider.enabled = false;
+            foreach (var collider in shatterColliders)
+            {
+                collider.enabled = false;
+            }
         }
 
         Health = maxHP;
@@ -158,6 +165,30 @@ public class DraggableItem : MonoBehaviour, IDamageable
 
     }
 
+    public void SetPickupVFX(bool isOn)
+    {
+        float str = isOn ? 2f : 0f;
+
+        foreach (Collider child in shatterColliders)
+        {
+            Renderer rend = child.gameObject.GetComponent<Renderer>();
+            if (rend != null)
+            {
+                rend.material.SetFloat("_Highlight_Strength", str);
+            }
+        }
+
+        if (isOn)
+        {
+            lightningParticle = Instantiate(lightningPrefab, transform.position, Quaternion.identity, transform);
+        }
+        else
+        {
+            Destroy(lightningParticle);
+        }
+    }
+
+
     IEnumerator AddExplosionForceToBody(Rigidbody body)
     {
         yield return new WaitForSeconds(.5f);
@@ -175,7 +206,7 @@ public class DraggableItem : MonoBehaviour, IDamageable
 
     protected virtual void OnCollisionEnter(Collision collision)
     {
-        if (collision.relativeVelocity.magnitude > velocityThreshold)
+        if (collision.impulse.magnitude > impulseDamageThreshold && !frozen)
         {
             Hit(1);
         }

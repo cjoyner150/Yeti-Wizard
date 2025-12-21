@@ -49,12 +49,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DraggableItem
   shatterColliders:
   - {fileID: 5579088339104695394}
+  shatterExplosionPoint: {fileID: 0}
   isDestructible: 0
   velocityThreshold: 10
   yOffset: 0.5
   maxHP: 1
   freezeEvent: {fileID: 11400000, guid: bdceff51fbc343b4f918e05d335a5c41, type: 2}
   unfreezeEvent: {fileID: 11400000, guid: e99c13a2911bf9845a6a39b17334ee93, type: 2}
+  lightningPrefab: {fileID: 5117682083495086176, guid: 1dc0cd1dd9eeb59419b3a2dbf49a85b1, type: 3}
   currentState: 0
 --- !u!54 &6400879675504579065
 Rigidbody:
@@ -171,7 +173,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c7ab6fd0c54df0b499229db9ae16d356, type: 2}
+  - {fileID: 2100000, guid: 4216cc0085ba3e945a4ef31643671711, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

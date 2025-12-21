@@ -14,8 +14,8 @@ TagManager:
   - PickupLayer
   - PlayerDetector
   - Projectile
-  - 
-  - 
+  - VFX
+  - Player
   - 
   - 
   - 
