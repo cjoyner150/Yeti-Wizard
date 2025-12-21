@@ -51,7 +51,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.25
+  m_Radius: 0.4
   m_Height: 1.6
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
@@ -145,9 +145,22 @@ MonoBehaviour:
   bulletPrefab: {fileID: 6236664591292791679, guid: cca0af09f20534844a27d842d534362b, type: 3}
   attackRate: 2
   bulletSpeed: 5
-  bulletDamage: 1
+  bulletDamage: 10
   attackRotationMax: 15
   despawnTime: 5
+  baseCollider: {fileID: 3250287736938534794}
+  rigRigidbodies:
+  - {fileID: 4015882492217010267}
+  - {fileID: 2093148788212874477}
+  - {fileID: 8639196890091178043}
+  - {fileID: 1978742976183136570}
+  - {fileID: 1094453691348358472}
+  - {fileID: 1367353451855714861}
+  - {fileID: 3452585939145912849}
+  - {fileID: 1379509757869264222}
+  - {fileID: 2656628940657855014}
+  - {fileID: 69223156049550300}
+  - {fileID: 8324589297257579954}
   deathEventSO: {fileID: 11400000, guid: b547e2a591461be4cbe1d3fed2b727c1, type: 2}
   freezeEventSO: {fileID: 11400000, guid: bdceff51fbc343b4f918e05d335a5c41, type: 2}
   unfreezeEventSO: {fileID: 11400000, guid: e99c13a2911bf9845a6a39b17334ee93, type: 2}
