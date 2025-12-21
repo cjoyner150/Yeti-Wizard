@@ -21,8 +21,12 @@ public class DraggableItem : MonoBehaviour, IDamageable
     [Header("Audio")]
     [SerializeField] private SFXPlayer destroyedSFXPlayer;
 
+    [SerializeField] GameObject shatterParticlePrefab;
+
     GameObject lightningParticle;
-    
+
+    private Quaternion rot;
+    private ContactPoint contact;
 
     protected Rigidbody rb;
     protected Collider col;
@@ -143,6 +147,8 @@ public class DraggableItem : MonoBehaviour, IDamageable
     {
         if (currentState == DraggableState.shattered) return;
 
+        Instantiate(shatterParticlePrefab, contact.point, rot);
+
         if (isDestructible)
         {
             rb.isKinematic = true;
@@ -208,6 +214,12 @@ public class DraggableItem : MonoBehaviour, IDamageable
 
     protected virtual void OnCollisionEnter(Collision collision)
     {
+        contact = collision.contacts[0];
+        Vector3 normal = contact.normal;
+        rot = Quaternion.LookRotation(normal);
+
+
+
         Debug.Log($"{name} was hit with {collision.impulse.magnitude} impulse");
         if (collision.impulse.magnitude > impulseDamageThreshold && !frozen)
         {

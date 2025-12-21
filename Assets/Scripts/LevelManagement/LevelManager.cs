@@ -25,6 +25,7 @@ public class LevelManager: MonoBehaviour
     [Header("References")]
     [SerializeField] GameObject player;
     [SerializeField] PlayableDirector startWaveTimeline;
+    [SerializeField] TimeStopVFX tsv;
 
     [Header("Events")]
     [SerializeField] VoidEventSO freezeEvent;
@@ -138,12 +139,14 @@ public class LevelManager: MonoBehaviour
     {
         freezeEvent.onEventRaised?.Invoke();
         frozen = true;
+        tsv.setTimeStop(true);
     }
 
     private void Unfreeze()
     {
         frozen = false;
         unfreezeEvent.onEventRaised?.Invoke();
+        tsv.setTimeStop(true);
     }
 
     private void OnEnemyDied()
