@@ -154,19 +154,35 @@ public class LevelManager: MonoBehaviour
         frozen = true;
         tsv.setTimeStop(true);
 
-        //StartCoroutine(MusicPrep());
+        source.loop = false;
+        source.Stop();
+        StartCoroutine(MusicPrep());
     }
 
-    //IEnumerator MusicPrep()
-    //{
-    //    source.PlayOneShot();
-    //}
+    IEnumerator MusicPrep()
+    {
+        source.PlayOneShot(prepLoop01);
+
+        yield return new WaitForSecondsRealtime(60);
+
+        source.PlayOneShot(prepLoop02);
+
+        yield return new WaitForSecondsRealtime(60);
+
+        source.PlayOneShot(prepLoop03);
+
+        yield return new WaitForSecondsRealtime(60);
+    }
 
     private void Unfreeze()
     {
         frozen = false;
         unfreezeEvent.onEventRaised?.Invoke();
         tsv.setTimeStop(true);
+
+        source.loop = true;
+        source.clip = combatLoop;
+        source.Play();
     }
 
     private void OnEnemyDied()
