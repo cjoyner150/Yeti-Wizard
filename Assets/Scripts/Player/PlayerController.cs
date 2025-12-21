@@ -30,7 +30,8 @@ public class PlayerController : MonoBehaviour, IDamageable
     public float maxHoldDistanceFromCamera = 8f;
     public GameObject lineStart;
     public GameObject lineEnd;
-    public LineRenderer Beam;
+    public LineRenderer Beam1;
+    public LineRenderer Beam2;
 
     [Header("Weight System")]
     public float minMoveSpeed = 2f;
@@ -275,7 +276,8 @@ public class PlayerController : MonoBehaviour, IDamageable
                 heldObjectRB.angularDamping = 5f;
                 currentHoldDistance = Vector3.Distance(cameraHolder.position, heldObjectRB.position);
 
-                Beam.enabled = true;
+                Beam1.enabled = true;
+                Beam2.enabled = true;
                 heldObject.SetPickupVFX(true);
 
                 if (pickupSound != null && audioSource != null)
@@ -309,8 +311,9 @@ public class PlayerController : MonoBehaviour, IDamageable
         heldObjectRB = null;
         heldObject = null;
 
-        Beam.enabled = false;
-        
+        Beam1.enabled = false;
+        Beam2.enabled = false;
+
 
         Debug.Log("Dropped object");
     }
