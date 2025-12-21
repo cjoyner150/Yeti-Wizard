@@ -142,6 +142,10 @@ MonoBehaviour:
   spawnDistance: 10
   invincibleTimeAfterSpawn: 3
   stoppingDistanceToTarget: 4
+  moveTimeMin: 4
+  moveTimeMax: 7
+  waitTimeMin: 2
+  waitTimeMax: 7
   bulletSpawnPoint: {fileID: 8627735067651917250}
   bulletPrefab: {fileID: 6236664591292791679, guid: cca0af09f20534844a27d842d534362b, type: 3}
   attackRate: 2
