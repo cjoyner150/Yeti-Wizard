@@ -234,7 +234,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c52431a5db964994f8dc42567e9f1878, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bullet
-  disappearTime: 5
+  disappearTime: 3
 --- !u!136 &7863672018995372582
 CapsuleCollider:
   m_ObjectHideFlags: 0

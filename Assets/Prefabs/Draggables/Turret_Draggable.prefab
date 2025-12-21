@@ -480,7 +480,7 @@ MonoBehaviour:
   - {fileID: 3390179861083689392}
   shatterExplosionPoint: {fileID: 2050814013631132406}
   isDestructible: 1
-  velocityThreshold: 10
+  impulseDamageThreshold: 15
   yOffset: 0
   maxHP: 1
   freezeEvent: {fileID: 11400000, guid: bdceff51fbc343b4f918e05d335a5c41, type: 2}

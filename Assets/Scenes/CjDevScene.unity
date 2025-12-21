@@ -913,7 +913,7 @@ MonoBehaviour:
   ItemSpawners:
   - {fileID: 1919360805}
   - {fileID: 349913831}
-  prepTime: 120
+  prepTime: 20
   initialConfig:
     waveNumber: 0
     enemies: 20
