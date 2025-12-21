@@ -79,6 +79,9 @@ public class PlayerController : MonoBehaviour, IDamageable
     [Header("Input")]
     PlayerInputMap inputControls;
     InputAction fire;
+
+    [Header("Audio")]
+    [SerializeField] SFXPlayer gunshotSFXPlayer;
     
     // Private vars
     private float currentHoldDistance;
@@ -472,6 +475,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         Bullet bullet = bulletGO.GetComponent<Bullet>();
         bullet.Init(1, bulletSpeed);
         bullet.Launch();
+        if (gunshotSFXPlayer != null) gunshotSFXPlayer.Play();
 
         shootTimer = shootCooldown;
     }

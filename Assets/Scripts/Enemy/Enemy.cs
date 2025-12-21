@@ -6,6 +6,7 @@ public class Enemy : MonoBehaviour, IDamageable
     [Header("Health Settings")]
     [SerializeField] private int startingHealth;
     [SerializeField] private float damageMult;
+    [SerializeField] private float damageVelocityThreshold;
 
     [Header("Spawn Settings")]
     [SerializeField] private float spawnDistance;
@@ -13,6 +14,10 @@ public class Enemy : MonoBehaviour, IDamageable
 
     [Header("Move Settings")]
     [SerializeField] private float stoppingDistanceToTarget;
+    [SerializeField] private float moveTimeMin;
+    [SerializeField] private float moveTimeMax;
+    [SerializeField] private float waitTimeMin;
+    [SerializeField] private float waitTimeMax;
 
     [Header("Attack Settings")]
     [SerializeField] private Transform bulletSpawnPoint;
@@ -29,6 +34,10 @@ public class Enemy : MonoBehaviour, IDamageable
     [SerializeField] private Collider baseCollider;
     [SerializeField] private Rigidbody[] rigRigidbodies;
 
+    [Header("Audio")]
+    [SerializeField] private SFXPlayer gunshotSFXPlayer;
+    [SerializeField] private SFXPlayer deathSFXPlayer;
+
     [Header("Broadcast Events")]
     [SerializeField] private VoidEventSO deathEventSO;
 
@@ -39,6 +48,8 @@ public class Enemy : MonoBehaviour, IDamageable
     private State state;
     private int health;
     private int bulletDamageMultiplier;
+    private float moveTimer;
+    private float waitTimer;
     private float attackTimer;
     private float despawnTimer;
     private float invincibleTimer;
@@ -84,6 +95,9 @@ public class Enemy : MonoBehaviour, IDamageable
         {
             case State.Frozen:
                 break;
+            case State.Waiting:
+                HandleWaiting();
+                break;
             case State.Moving:
                 HandleMovement();
                 break;
@@ -110,6 +124,9 @@ public class Enemy : MonoBehaviour, IDamageable
 
         SetRagdollParts();
 
+        ClampTime(ref waitTimeMin, ref waitTimeMax);
+        ClampTime(ref moveTimeMin, ref moveTimeMax);
+
         Vector3 spawnPos = transform.position + Random.insideUnitSphere * spawnDistance;
         NavMesh.SamplePosition(spawnPos, out NavMeshHit hit, 500f, NavMesh.AllAreas);
         navAgent.Warp(hit.position);
@@ -123,6 +140,7 @@ public class Enemy : MonoBehaviour, IDamageable
         foreach (EnemyRagdollPart part in ragdollParts)
         {
             part.DamageMult = damageMult;
+            part.DamageVelocityThreshold = damageVelocityThreshold;
         }
     }
     #endregion
@@ -135,6 +153,8 @@ public class Enemy : MonoBehaviour, IDamageable
             case State.Frozen:
                 SetRagdollKinematic(false);
                 anim.speed = 1;
+                break;
+            case State.Waiting:
                 break;
             case State.Moving:
                 navAgent.isStopped = true;
@@ -155,9 +175,13 @@ public class Enemy : MonoBehaviour, IDamageable
                 SetRagdollKinematic(true);
                 anim.speed = 0;
                 break;
+            case State.Waiting:
+                waitTimer = Random.Range(waitTimeMin, waitTimeMax);
+                break;
             case State.Moving:
                 navAgent.isStopped = false;
                 anim.SetBool(ANIM_PARAM_MOVING, true);
+                moveTimer = Random.Range(moveTimeMin, moveTimeMax);
                 break;
             case State.Attacking:
                 attackTimer = attackRate;
@@ -168,8 +192,8 @@ public class Enemy : MonoBehaviour, IDamageable
                 anim.enabled = false;
                 baseCollider.enabled = false;
                 despawnTimer = despawnTime;
-                deathEventSO.RaiseEvent(); 
-                //SetRagdollRigidbodies(true);
+                deathEventSO.RaiseEvent();
+                if (deathSFXPlayer != null) deathSFXPlayer.Play();
                 break;
         }
     }
@@ -198,11 +222,38 @@ public class Enemy : MonoBehaviour, IDamageable
     }
     #endregion
 
+    #region
+    private void HandleWaiting()
+    {
+        if (waitTimer > 0)
+        {
+            waitTimer -= Time.deltaTime;
+
+            if (waitTimer <= 0)
+            {
+                ChangeState(State.Moving);
+                return;
+            }
+        }
+    }
+    #endregion
+
     #region Movement
     private void HandleMovement()
     {
         if (navAgent == null) return;
         if (currentTarget == null) return;
+
+        if (moveTimer > 0)
+        {
+            moveTimer -= Time.deltaTime;
+
+            if (moveTimer <= 0)
+            {
+                ChangeState(State.Waiting);
+                return;
+            }
+        }
 
         navAgent.SetDestination(currentTarget.position);
 
@@ -233,6 +284,7 @@ public class Enemy : MonoBehaviour, IDamageable
         Bullet bullet = Instantiate(bulletPrefab, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
         bullet.Init(bulletDamage * bulletDamageMultiplier, bulletSpeed);
         bullet.Launch();
+        if (gunshotSFXPlayer != null) gunshotSFXPlayer.Play();
 
         navAgent.SetDestination(currentTarget.position);
 
@@ -258,6 +310,8 @@ public class Enemy : MonoBehaviour, IDamageable
             int damage;
             if (!hitRigidbody.TryGetComponent(out DamageComponent dmgComponent))
             {
+                if (hitRigidbody.linearVelocity.magnitude < damageVelocityThreshold) return;
+
                 damage = Mathf.RoundToInt(hitRigidbody.linearVelocity.magnitude * damageMult);
             }
             else damage = dmgComponent.Damage;
@@ -374,11 +428,18 @@ public class Enemy : MonoBehaviour, IDamageable
 
         bulletSpawnPoint.rotation = targetRotation;
     }
+
+    private void ClampTime(ref float min, ref float max)
+    {
+        if (min > max) min = max;
+        if (max < min) max = min;
+    }
     #endregion
 
     public enum State
     {
         Frozen,
+        Waiting,
         Moving,
         Attacking,
         Dead,

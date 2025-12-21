@@ -3,6 +3,7 @@ using UnityEngine;
 public class EnemyRagdollPart : MonoBehaviour
 {
     public float DamageMult { get; set; }
+    public float DamageVelocityThreshold { get; set; }
 
     private const string HIT_METHOD_NAME = "HitFromPart";
 
@@ -18,6 +19,8 @@ public class EnemyRagdollPart : MonoBehaviour
             int damage;
             if (!hitRigidbody.TryGetComponent(out DamageComponent dmgComponent))
             {
+                if (hitRigidbody.linearVelocity.magnitude < DamageVelocityThreshold) return;
+
                 damage = Mathf.RoundToInt(hitRigidbody.linearVelocity.magnitude * DamageMult);
             }
             else damage = dmgComponent.Damage;

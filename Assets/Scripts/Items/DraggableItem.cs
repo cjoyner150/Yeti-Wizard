@@ -18,6 +18,9 @@ public class DraggableItem : MonoBehaviour, IDamageable
     [SerializeField] protected VoidEventSO unfreezeEvent;
     [SerializeField] GameObject lightningPrefab;
 
+    [Header("Audio")]
+    [SerializeField] private SFXPlayer destroyedSFXPlayer;
+
     GameObject lightningParticle;
     
 
@@ -25,6 +28,7 @@ public class DraggableItem : MonoBehaviour, IDamageable
     protected Collider col;
     protected bool frozen;
 
+    [Header("State")]
     public DraggableState currentState;
     public enum DraggableState
     {
@@ -166,10 +170,9 @@ public class DraggableItem : MonoBehaviour, IDamageable
         }
         else
         {
+            if (destroyedSFXPlayer != null) destroyedSFXPlayer.PlayClipAtPoint();
             Destroy(gameObject);
         }
-
-
     }
 
     public void SetPickupVFX(bool isOn)

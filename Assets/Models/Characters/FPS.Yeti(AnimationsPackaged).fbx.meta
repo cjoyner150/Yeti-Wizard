@@ -1,19 +1,9 @@
 fileFormatVersion: 2
-guid: 0d71ac305f1b77245828e4c54ce34fd6
+guid: 4a5f99d2a92d6914185b8fb057928ed8
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Fur
-    second: {fileID: 2100000, guid: 95b74b1581d2ed24abf1a115bb3d2b22, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: YetiSkin
-    second: {fileID: 2100000, guid: 78e86d13f3d86f64abb51540c8d93b3f, type: 2}
+  externalObjects: {}
   materials:
     materialImportMode: 2
     materialName: 0
