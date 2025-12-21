@@ -28,6 +28,7 @@ public class Enemy : MonoBehaviour, IDamageable
     [Header("Components")]
     [SerializeField] private Collider baseCollider;
     [SerializeField] private Rigidbody[] rigRigidbodies;
+    [SerializeField] private Collider[] rigColliders;
 
     [Header("Broadcast Events")]
     [SerializeField] private VoidEventSO deathEventSO;
@@ -110,6 +111,7 @@ public class Enemy : MonoBehaviour, IDamageable
         else health = startingHealth;
         invincibleTimer = invincibleTimeAfterSpawn;
 
+        SetRagdollColliders(false);
         Vector3 spawnPos = transform.position + Random.insideUnitSphere * spawnDistance;
         NavMesh.SamplePosition(spawnPos, out NavMeshHit hit, 500f, NavMesh.AllAreas);
         navAgent.Warp(hit.position);
@@ -160,6 +162,8 @@ public class Enemy : MonoBehaviour, IDamageable
                 baseCollider.enabled = false;
                 despawnTimer = despawnTime;
                 deathEventSO.RaiseEvent();
+                deathEventSO.RaiseEvent(); 
+                SetRagdollColliders(true);
                 break;
         }
     }
@@ -185,14 +189,6 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         if (health > 0) ChangeState(State.Moving);
         else ChangeState(State.Dead);
-    }
-
-    private void SetRagdollKinematic(bool value)
-    {
-        foreach (Rigidbody rb in rigRigidbodies)
-        {
-            rb.isKinematic = value;
-        }
     }
     #endregion
 
@@ -318,6 +314,24 @@ public class Enemy : MonoBehaviour, IDamageable
         }
 
         Destroy(gameObject);
+    }
+    #endregion
+
+    #region Ragdoll
+    private void SetRagdollKinematic(bool value)
+    {
+        foreach (Rigidbody rb in rigRigidbodies)
+        {
+            rb.isKinematic = value;
+        }
+    }
+
+    private void SetRagdollColliders(bool value)
+    {
+        foreach (Collider collid in rigColliders)
+        {
+            collid.enabled = value;
+        }
     }
     #endregion
 
