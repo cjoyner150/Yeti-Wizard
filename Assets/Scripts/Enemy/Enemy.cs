@@ -193,7 +193,7 @@ public class Enemy : MonoBehaviour, IDamageable
                 baseCollider.enabled = false;
                 despawnTimer = despawnTime;
                 deathEventSO.RaiseEvent();
-                deathSFXPlayer.Play();
+                if (deathSFXPlayer != null) deathSFXPlayer.Play();
                 break;
         }
     }
@@ -284,7 +284,7 @@ public class Enemy : MonoBehaviour, IDamageable
         Bullet bullet = Instantiate(bulletPrefab, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
         bullet.Init(bulletDamage * bulletDamageMultiplier, bulletSpeed);
         bullet.Launch();
-        gunshotSFXPlayer.Play();
+        if (gunshotSFXPlayer != null) gunshotSFXPlayer.Play();
 
         navAgent.SetDestination(currentTarget.position);
 

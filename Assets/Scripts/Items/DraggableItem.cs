@@ -170,7 +170,7 @@ public class DraggableItem : MonoBehaviour, IDamageable
         }
         else
         {
-            if (destroyedSFXPlayer != null) destroyedSFXPlayer.Play();
+            if (destroyedSFXPlayer != null) destroyedSFXPlayer.PlayClipAtPoint();
             Destroy(gameObject);
         }
     }
