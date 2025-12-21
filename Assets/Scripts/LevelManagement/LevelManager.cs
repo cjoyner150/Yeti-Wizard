@@ -165,10 +165,6 @@ public class LevelManager: MonoBehaviour
 
         yield return new WaitForSecondsRealtime(60);
 
-        source.PlayOneShot(prepLoop02);
-
-        yield return new WaitForSecondsRealtime(60);
-
         source.PlayOneShot(prepLoop03);
 
         yield return new WaitForSecondsRealtime(60);
