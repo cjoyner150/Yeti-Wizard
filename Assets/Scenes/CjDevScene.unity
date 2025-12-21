@@ -217,6 +217,25 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3446977958090381278, guid: 9b707be2e4d79d34794630f67fddc796, type: 3}
   m_PrefabInstance: {fileID: 1399462901}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &164368743
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 164368738}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dabfcd7c59f4e8f4cafb50113725a881, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TimeStopVFX
+  toggleKey: 34
+  transitionTime: 0.25
+  stoppedSaturation: -70
+  stoppedContrast: 20
+  stoppedBloom: 1.2
+  stoppedVignette: 0.45
+  stoppedChromatic: 0.25
 --- !u!1 &199452454
 GameObject:
   m_ObjectHideFlags: 0
@@ -510,7 +529,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
+  m_VoxelSize: 0.13333334
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: ab4fd50dadf8b654096e6e6ec090f857, type: 2}
   m_BuildHeightMesh: 0
@@ -1291,7 +1310,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3446977958090381278, guid: 9b707be2e4d79d34794630f67fddc796, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 164368743}
   m_SourcePrefab: {fileID: 100100000, guid: 9b707be2e4d79d34794630f67fddc796, type: 3}
 --- !u!1 &1491028200
 GameObject:

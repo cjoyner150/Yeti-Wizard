@@ -125,11 +125,12 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _Highlight_Size: 1.5
-    - _Highlight_Strength: 0
+    - _Highlight_Size: 0.8
+    - _Highlight_Strength: 0.24
     - _Max: 1
     - _Metallic: 0
     - _Min: 0.2
+    - _Noise_Scale: 500
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueControl: 0
@@ -138,7 +139,7 @@ Material:
     - _Shades: 0.07
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
-    - _Snow_Intensity: 0
+    - _Snow_Intensity: 0.57
     - _Snow_Opacity: 1
     - _Snow_Tiling: 1
     - _SpecularHighlights: 1
@@ -152,7 +153,7 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _Highlight_Color: {r: 4, g: 3.854215, b: 0, a: 1}
+    - _Highlight_Color: {r: 0.66373694, g: 0.9639151, b: 2.8716779, a: 1}
     - _Snow_Direction: {r: 0, g: 1, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _Tint: {r: 1, g: 1, b: 1, a: 0}
