@@ -170,9 +170,13 @@ PrefabInstance:
     m_TransformParent: {fileID: 5071954294562633307}
     m_Modifications:
     - target: {fileID: 844192255742603113, guid: 4b4b95b5359737d49940ad5b17884584, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 844192255742603113, guid: 4b4b95b5359737d49940ad5b17884584, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 46dedd1c32596744cbd7c816f50230d0, type: 2}
+      objectReference: {fileID: 2100000, guid: 5c69cb1eb0ba9d640a3955c4a6052a71, type: 2}
     - target: {fileID: 1694449185449576475, guid: 4b4b95b5359737d49940ad5b17884584, type: 3}
       propertyPath: m_LocalScale.x
       value: 3

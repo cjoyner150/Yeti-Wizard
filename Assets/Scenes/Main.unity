@@ -7278,19 +7278,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b6e9fc0551c2b25428184019e02e09a0, type: 3}
       propertyPath: m_LocalScale.z
-      value: 3.3681705
+      value: 4.855513
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b6e9fc0551c2b25428184019e02e09a0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3.1250534
+      value: 7.37
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b6e9fc0551c2b25428184019e02e09a0, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -10.372004
+      value: -12.57
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b6e9fc0551c2b25428184019e02e09a0, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -41.165283
+      value: -40.73
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b6e9fc0551c2b25428184019e02e09a0, type: 3}
       propertyPath: m_LocalRotation.w
@@ -12935,6 +12935,7 @@ MonoBehaviour:
   stoppedBloom: 1.2
   stoppedVignette: 0.45
   stoppedChromatic: 0.25
+  volume: {fileID: 0}
 --- !u!4 &1587925119 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 51492f4be227ca04e8dac7aff82ab549, type: 3}

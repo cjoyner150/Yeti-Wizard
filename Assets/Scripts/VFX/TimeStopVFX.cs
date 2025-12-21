@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 
 public class TimeStopVFX : MonoBehaviour
 {
+
     
 
     [Header("Transition")]
@@ -17,7 +18,7 @@ public class TimeStopVFX : MonoBehaviour
     public float stoppedVignette = 0.45f;
     public float stoppedChromatic = 0.25f;
 
-    Volume volume;
+    [SerializeField] Volume volume;
 
     ColorAdjustments color;
     Bloom bloom;
@@ -38,8 +39,8 @@ public class TimeStopVFX : MonoBehaviour
     void Start()
     {
 
-        volume = FindObjectOfType<Volume>();
-        volume.profile = Instantiate(volume.profile);
+        //volume = FindObjectOfType<Volume>();
+        //volume.profile = Instantiate(volume.profile);
 
         if (!volume)
         {
