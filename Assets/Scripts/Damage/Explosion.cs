@@ -31,9 +31,13 @@ public class Explosion : MonoBehaviour
             rb.AddExplosionForce(explosionForce, transform.position, explosionRadius);
         }
 
-        if ((other.CompareTag("Player") || other.CompareTag("Enemy")) && other.TryGetComponent(out IDamageable damageable))
+        if (other.CompareTag("Player") || other.CompareTag("Enemy"))
         {
-            damageable.Hit(3);
+            IDamageable damageable = other.GetComponent<IDamageable>();
+            if (damageable == null) damageable = other.transform.parent.GetComponent<IDamageable>();
+
+            damageable?.Hit(3);
+            
         }
     }
 }
