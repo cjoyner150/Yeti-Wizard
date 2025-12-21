@@ -6,8 +6,8 @@ public class DraggableItem : MonoBehaviour, IDamageable
     [Header("Destructible")]
     [SerializeField] protected Collider[] shatterColliders;
     [SerializeField] protected Transform shatterExplosionPoint;
-    [SerializeField] protected float explosionForce;
-    [SerializeField] protected float explosionRange;
+    [SerializeField] protected float shatterExplosionForce;
+    [SerializeField] protected float shatterExplosionRange;
     [SerializeField] protected bool isDestructible;
 
     [Header("Draggable")]
@@ -157,7 +157,7 @@ public class DraggableItem : MonoBehaviour, IDamageable
                 rigidBody.interpolation = RigidbodyInterpolation.Interpolate;
                 rigidBody.collisionDetectionMode = CollisionDetectionMode.Continuous;
 
-                rigidBody.AddExplosionForce(explosionForce, shatterExplosionPoint.position, explosionRange);
+                rigidBody.AddExplosionForce(shatterExplosionForce, shatterExplosionPoint.position, shatterExplosionRange);
             }
 
             currentState = DraggableState.shattered;

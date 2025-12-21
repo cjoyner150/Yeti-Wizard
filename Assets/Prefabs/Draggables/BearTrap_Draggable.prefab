@@ -172,8 +172,8 @@ MonoBehaviour:
   - {fileID: 8242290195804524987}
   - {fileID: 1949753725478256464}
   shatterExplosionPoint: {fileID: 2050814013631132406}
-  explosionForce: 10
-  explosionRange: 3
+  shatterExplosionForce: 10
+  shatterExplosionRange: 3
   isDestructible: 1
   impulseDamageThreshold: 15
   yOffset: 0.008
@@ -182,6 +182,7 @@ MonoBehaviour:
   unfreezeEvent: {fileID: 11400000, guid: e99c13a2911bf9845a6a39b17334ee93, type: 2}
   lightningPrefab: {fileID: 5117682083495086176, guid: 1dc0cd1dd9eeb59419b3a2dbf49a85b1, type: 3}
   currentState: 0
+  bearTrapTrigger: {fileID: 6940569141760294140}
 --- !u!65 &3681489740563248377
 BoxCollider:
   m_ObjectHideFlags: 0

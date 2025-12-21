@@ -479,8 +479,8 @@ MonoBehaviour:
   - {fileID: 3459329525498940043}
   - {fileID: 3390179861083689392}
   shatterExplosionPoint: {fileID: 2050814013631132406}
-  explosionForce: 10
-  explosionRange: 3
+  shatterExplosionForce: 15
+  shatterExplosionRange: 3
   isDestructible: 1
   impulseDamageThreshold: 15
   yOffset: 0
@@ -493,6 +493,7 @@ MonoBehaviour:
   turnSpeed: 2
   shootCooldown: 0.5
   shootRange: 15
+  bulletForce: 100
   shootLocLeft: {fileID: 4432524653122628465}
   shootLocRight: {fileID: 5701362959283168521}
   bulletPrefab: {fileID: 3852671534667916868, guid: cca0af09f20534844a27d842d534362b, type: 3}

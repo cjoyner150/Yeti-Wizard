@@ -50,8 +50,8 @@ MonoBehaviour:
   shatterColliders:
   - {fileID: 0}
   shatterExplosionPoint: {fileID: 0}
-  explosionForce: 0
-  explosionRange: 0
+  shatterExplosionForce: 0
+  shatterExplosionRange: 0
   isDestructible: 0
   impulseDamageThreshold: 10
   yOffset: 0.1
@@ -62,6 +62,8 @@ MonoBehaviour:
   currentState: 0
   explosionPrefab: {fileID: 7589772742670703100, guid: 0eb2850815cec4540a2c8bfa9de7e708, type: 3}
   explosionVFXPrefab: {fileID: 451632614410866318, guid: 0e4b787d636420e4d8e6990b52597a86, type: 3}
+  explosionRadius: 5
+  explosionForce: 50
 --- !u!54 &2138356492269510233
 Rigidbody:
   m_ObjectHideFlags: 0

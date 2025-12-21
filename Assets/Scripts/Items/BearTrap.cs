@@ -5,6 +5,8 @@ public class BearTrap : DraggableItem
     Animator anim;
     bool triggered = false;
 
+    [SerializeField] Collider bearTrapTrigger;
+
     protected override void Awake()
     {
         base.Awake();
@@ -15,7 +17,7 @@ public class BearTrap : DraggableItem
     {
         if (triggered || currentState == DraggableState.shattered) return;
 
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && other.CompareTag("Enemy"))
         {
             triggered = true;
 
@@ -23,5 +25,14 @@ public class BearTrap : DraggableItem
             IDamageable damageable = other.GetComponent<IDamageable>();
             damageable?.Hit(2);
         }
+    }
+
+    public override void Die()
+    {
+        if (currentState == DraggableState.shattered) return;
+
+        bearTrapTrigger.enabled = false;
+
+        base.Die();
     }
 }
