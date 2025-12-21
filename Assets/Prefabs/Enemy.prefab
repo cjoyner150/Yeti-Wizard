@@ -308,6 +308,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   attackRange: 15
+  particlePrefab: {fileID: 3589417654190169269, guid: 6442d9fa214cfb942b9022e3eaee13da, type: 3}
   despawnTime: 5
   baseCollider: {fileID: 3250287736938534794}
   rigRigidbodies:

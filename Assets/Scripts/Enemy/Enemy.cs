@@ -28,6 +28,7 @@ public class Enemy : MonoBehaviour, IDamageable
     [SerializeField] private float attackRotationMax;
     [SerializeField] LayerMask blockables;
     [SerializeField] float attackRange;
+    public GameObject particlePrefab;
 
     [Header("Death Settings")]
     [SerializeField] private float despawnTime;
@@ -287,6 +288,7 @@ public class Enemy : MonoBehaviour, IDamageable
         bullet.Init(bulletDamage * bulletDamageMultiplier, bulletSpeed);
         bullet.Launch();
         if (gunshotSFXPlayer != null) gunshotSFXPlayer.Play();
+        Instantiate(particlePrefab, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
 
         navAgent.SetDestination(currentTarget.position);
 
