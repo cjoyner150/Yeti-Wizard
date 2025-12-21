@@ -3,9 +3,14 @@ using UnityEngine;
 
 public class DraggableItem : MonoBehaviour, IDamageable
 {
+    [Header("Destructible")]
     [SerializeField] protected Collider[] shatterColliders;
     [SerializeField] protected Transform shatterExplosionPoint;
+    [SerializeField] protected float shatterExplosionForce;
+    [SerializeField] protected float shatterExplosionRange;
     [SerializeField] protected bool isDestructible;
+
+    [Header("Draggable")]
     [SerializeField] protected float impulseDamageThreshold = 10;
     [SerializeField] protected float yOffset = 0;
     [SerializeField] protected int maxHP = 1;
@@ -149,13 +154,15 @@ public class DraggableItem : MonoBehaviour, IDamageable
 
                 rigidBody.isKinematic = false;
                 rigidBody.useGravity = true;
+                rigidBody.interpolation = RigidbodyInterpolation.Interpolate;
+                rigidBody.collisionDetectionMode = CollisionDetectionMode.Continuous;
 
-                //StartCoroutine(AddExplosionForceToBody(rigidBody));
+                rigidBody.AddExplosionForce(shatterExplosionForce, shatterExplosionPoint.position, shatterExplosionRange);
             }
 
             currentState = DraggableState.shattered;
 
-            Debug.Log($"{name} has died");
+            //Debug.Log($"{name} has died");
         }
         else
         {
@@ -169,14 +176,13 @@ public class DraggableItem : MonoBehaviour, IDamageable
     {
         float str = isOn ? 2f : 0f;
 
-        foreach (Collider child in shatterColliders)
+        MeshRenderer[] renderers = GetComponentsInChildren<MeshRenderer>();
+
+        foreach (MeshRenderer renderer in renderers)
         {
-            Renderer rend = child.gameObject.GetComponent<Renderer>();
-            if (rend != null)
-            {
-                rend.material.SetFloat("_Highlight_Strength", str);
-            }
+            renderer.material.SetFloat("_Highlight_Strength", str);
         }
+           
 
         if (isOn)
         {
@@ -186,13 +192,6 @@ public class DraggableItem : MonoBehaviour, IDamageable
         {
             Destroy(lightningParticle);
         }
-    }
-
-
-    IEnumerator AddExplosionForceToBody(Rigidbody body)
-    {
-        yield return new WaitForSeconds(.5f);
-        body.AddExplosionForce(1f, shatterExplosionPoint.position, 3f);
     }
 
     public virtual void Hit(int damage)
@@ -206,6 +205,7 @@ public class DraggableItem : MonoBehaviour, IDamageable
 
     protected virtual void OnCollisionEnter(Collision collision)
     {
+        Debug.Log($"{name} was hit with {collision.impulse.magnitude} impulse");
         if (collision.impulse.magnitude > impulseDamageThreshold && !frozen)
         {
             Hit(1);

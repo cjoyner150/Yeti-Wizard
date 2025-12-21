@@ -9,6 +9,7 @@ public class Turret : DraggableItem
     [Header("Shooting")]
     [SerializeField] float shootCooldown;
     [SerializeField] float shootRange;
+    [SerializeField] float bulletForce;
     [SerializeField] Transform shootLocLeft;
     [SerializeField] Transform shootLocRight;
     [SerializeField] GameObject bulletPrefab;
@@ -64,10 +65,10 @@ public class Turret : DraggableItem
         Bullet leftBullet = left.GetComponent<Bullet>();
         Bullet rightBullet = right.GetComponent<Bullet>();
         
-        leftBullet.Init(1, 20f);
+        leftBullet.Init(1, bulletForce);
         leftBullet.Launch();
 
-        rightBullet.Init(1, 20f);
+        rightBullet.Init(1, bulletForce);
         rightBullet.Launch();
 
         anim.SetTrigger("Fire");

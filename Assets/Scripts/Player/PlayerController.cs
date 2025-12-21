@@ -12,10 +12,24 @@ public class PlayerController : MonoBehaviour, IDamageable
     public float runMultiplier = 1.5f;
     public float jumpForce = 7f;
     public float airControlMultiplier = 0.5f;
+    [SerializeField] GameObject mesh;
 
     [Header("Mouse Look")]
-    public Transform cameraHolder;
+    public Transform orientation;
     public float mouseSensitivity = 10f;
+    Camera cam;
+
+    [Header("Shooting")]
+    [SerializeField] GameObject bulletPrefab;
+    [SerializeField] Transform gun;
+    [SerializeField] Transform bulletSpawnLoc;
+    [SerializeField] float bulletSpeed;
+    [SerializeField] LayerMask shootableLayers;
+    [SerializeField] float shootCooldown;
+    
+    float shootTimer = 0;
+    bool shootOnCD => shootTimer > 0;
+
 
     [Header("Force")]
     public float pickupForce = 15f;
@@ -49,6 +63,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     [Header("Pickup & Throw")]
     public float throwForce = 15f;
+    [SerializeField] LayerMask blocksHolding;
     
     [Header("Visual Feedback")]
     public AudioClip pickupSound;
@@ -58,6 +73,12 @@ public class PlayerController : MonoBehaviour, IDamageable
     [Header("Events")]
     [SerializeField] VoidEventSO freezeEvent;
     [SerializeField] VoidEventSO unfreezeEvent;
+    [SerializeField] IntEventSO healthSetEvent;
+    [SerializeField] IntEventSO updateHealthEvent;
+
+    [Header("Input")]
+    PlayerInputMap inputControls;
+    InputAction fire;
     
     // Private vars
     private float currentHoldDistance;
@@ -66,6 +87,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     private Rigidbody heldObjectRB;
     private DraggableItem heldObject;
     private float xRotation;
+    float yRotation;
     private float currentMoveSpeed;
     
     // Health
@@ -88,12 +110,26 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         freezeEvent.onEventRaised += Freeze;
         unfreezeEvent.onEventRaised += Unfreeze;
+
+        fire.performed += Shoot;
+        fire.Enable();
     }
 
     private void OnDisable()
     {
         freezeEvent.onEventRaised -= Freeze;
         unfreezeEvent.onEventRaised -= Unfreeze;
+
+        fire.performed -= Shoot;
+        fire.Disable();
+    }
+
+    void Awake()
+    {
+        inputControls = new PlayerInputMap();
+        fire = inputControls.Player.Fire;
+
+        cam = Camera.main;
     }
 
     void Start()
@@ -102,6 +138,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         rb.freezeRotation = true;
 
         currentHealth = maxHealth;
+        healthSetEvent.onEventRaised.Invoke(currentHealth);
         currentMoveSpeed = baseMoveSpeed;
         
         levelManager = FindAnyObjectByType<LevelManager>();
@@ -122,6 +159,12 @@ public class PlayerController : MonoBehaviour, IDamageable
         HandleJump();
         
         HandlePickupInput();
+        HandleGunRotate();
+
+        if (shootOnCD)
+        {
+            shootTimer -= Time.deltaTime;
+        }
         
         if (heldObjectRB != null)
         {
@@ -157,7 +200,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         if (Keyboard.current.sKey.isPressed) input.y -= 1;
         if (Keyboard.current.wKey.isPressed) input.y += 1;
 
-        Vector3 moveDir = transform.right * input.x + transform.forward * input.y;
+        Vector3 moveDir = (mesh.transform.right * input.x + mesh.transform.forward * input.y).normalized;
 
         CalculateCurrentSpeed();
         float speed = currentMoveSpeed;
@@ -214,8 +257,10 @@ public class PlayerController : MonoBehaviour, IDamageable
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -80f, 80f);
 
-        cameraHolder.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-        transform.Rotate(Vector3.up * mouseX);
+        yRotation += mouseX;
+
+        orientation.localRotation = Quaternion.Euler(xRotation, yRotation, 0f);
+        mesh.transform.localRotation = Quaternion.Euler(0, orientation.localRotation.eulerAngles.y, 0);
     }
 
     #endregion
@@ -227,9 +272,15 @@ public class PlayerController : MonoBehaviour, IDamageable
         if (Mouse.current.rightButton.wasPressedThisFrame)
         {
             if (heldObjectRB == null)
+            {
                 TryPickup();
+                //Debug.Log("Input pickup item");
+            }
             else
+            {
                 DropObject();
+                //Debug.Log("Input drop item");
+            }
         }
         
         if (heldObjectRB != null && Mouse.current.leftButton.wasPressedThisFrame && isCombatPhase)
@@ -259,7 +310,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     void TryPickup()
     {
-        Ray ray = new Ray(cameraHolder.position, cameraHolder.forward);
+        Ray ray = new Ray(cam.transform.position, cam.transform.forward);
 
         if (Physics.Raycast(ray, out RaycastHit hit, pickupRange, pickupLayerMask))
         {
@@ -274,7 +325,7 @@ public class PlayerController : MonoBehaviour, IDamageable
                 heldObjectMass = heldObjectRB.mass;
                 heldObjectRB.linearDamping = 10f;
                 heldObjectRB.angularDamping = 5f;
-                currentHoldDistance = Vector3.Distance(cameraHolder.position, heldObjectRB.position);
+                currentHoldDistance = Vector3.Distance(cam.transform.position, heldObjectRB.position);
 
                 Beam1.enabled = true;
                 Beam2.enabled = true;
@@ -287,11 +338,11 @@ public class PlayerController : MonoBehaviour, IDamageable
                 
                 if (heldObjectMass >= heavyThreshold)
                 {
-                    Debug.Log($"Picked up HEAVY object: {heldObjectRB.gameObject.name} (Mass: {heldObjectMass})");
+                    //Debug.Log($"Picked up HEAVY object: {heldObjectRB.gameObject.name} (Mass: {heldObjectMass})");
                 }
                 else
                 {
-                    Debug.Log($"Picked up: {heldObjectRB.gameObject.name} (Mass: {heldObjectMass})");
+                   // Debug.Log($"Picked up: {heldObjectRB.gameObject.name} (Mass: {heldObjectMass})");
                 }
             }
         }
@@ -315,14 +366,14 @@ public class PlayerController : MonoBehaviour, IDamageable
         Beam2.enabled = false;
 
 
-        Debug.Log("Dropped object");
+        //Debug.Log("Dropped object");
     }
 
     void CheckAutoDrop()
     {
         if (heldObjectRB == null) return;
         
-        float distanceToObject = Vector3.Distance(cameraHolder.position, heldObjectRB.position);
+        float distanceToObject = Vector3.Distance(orientation.position, heldObjectRB.position);
         
         if (distanceToObject > maxHoldDistanceFromCamera)
         {
@@ -331,10 +382,10 @@ public class PlayerController : MonoBehaviour, IDamageable
             return;
         }
         
-        Ray ray = new Ray(cameraHolder.position, (heldObjectRB.position - cameraHolder.position).normalized);
+        Ray ray = new Ray(orientation.position, (heldObjectRB.position - orientation.position).normalized);
         RaycastHit hit;
         
-        if (Physics.Raycast(ray, out hit, distanceToObject))
+        if (Physics.Raycast(ray, out hit, distanceToObject, blocksHolding))
         {
             if (hit.rigidbody != heldObjectRB && !hit.collider.isTrigger)
             {
@@ -348,7 +399,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         if (heldObjectRB == null) return;
 
-        Vector3 throwDirection = cameraHolder.forward;
+        Vector3 throwDirection = orientation.forward;
         
         float massAdjustedForce = throwForce * (1f + heldObjectMass * 0.2f);
         
@@ -361,14 +412,14 @@ public class PlayerController : MonoBehaviour, IDamageable
 
         DropObject();
         
-        Debug.Log($"Threw object with force: {massAdjustedForce:F1}");
+        //Debug.Log($"Threw object with force: {massAdjustedForce:F1}");
     }
 
     void HandleHeldObject()
     {
         if (heldObjectRB == null) return;
 
-        Vector3 targetPos = cameraHolder.position + cameraHolder.forward * currentHoldDistance;
+        Vector3 targetPos = orientation.position + orientation.forward * currentHoldDistance;
         Vector3 direction = targetPos - heldObjectRB.position;
         float distance = direction.magnitude;
         
@@ -409,6 +460,38 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     #endregion
 
+    #region Shooting
+
+    void Shoot(InputAction.CallbackContext ctx)
+    {
+        if (heldObjectRB != null) return;
+        if (shootOnCD || !IsShootingMode()) return;
+
+        GameObject bulletGO = Instantiate(bulletPrefab, bulletSpawnLoc.position, bulletSpawnLoc.rotation);
+
+        Bullet bullet = bulletGO.GetComponent<Bullet>();
+        bullet.Init(1, bulletSpeed);
+        bullet.Launch();
+
+        shootTimer = shootCooldown;
+    }
+
+    void HandleGunRotate()
+    {
+        Physics.Raycast(cam.transform.position, cam.transform.forward, out RaycastHit hit, 50, shootableLayers);
+
+        if (hit.collider != null)
+        {
+            gun.forward = Vector3.Slerp(gun.forward, (hit.point - gun.position).normalized, Time.deltaTime * 5);
+        }
+        else
+        {
+            gun.forward = Vector3.Slerp(gun.forward, (cam.transform.position + (cam.transform.forward * 50)) - gun.position, Time.deltaTime * 5);
+        }
+    }
+
+    #endregion
+
     #region Mode Switching
 
     public void SwitchToCombatMode()
@@ -417,15 +500,19 @@ public class PlayerController : MonoBehaviour, IDamageable
         {
             DropObject();
         }
-        
+
+        gun.gameObject.SetActive(true);
+
         isCombatPhase = true;
-        Debug.Log("Player: Switched to Shooting Mode");
+        //Debug.Log("Player: Switched to Shooting Mode");
     }
 
     public void SwitchToPrepMode()
     {
+        gun.gameObject.SetActive(false);
+
         isCombatPhase = false;
-        Debug.Log("Player: Switched to Pickup Mode");
+        //Debug.Log("Player: Switched to Pickup Mode");
     }
 
     #endregion
@@ -445,12 +532,12 @@ public class PlayerController : MonoBehaviour, IDamageable
 
         CheckForDamage(collision);
     }
-
+    
     void CheckForDamage(Collision collision)
     {
         if (isInvincible || currentHealth <= 0) return;
 
-        float impactForce = collision.relativeVelocity.magnitude;
+        float impactForce = collision.impulse.magnitude;
         
         if (impactForce >= damageThreshold)
         {
@@ -465,7 +552,9 @@ public class PlayerController : MonoBehaviour, IDamageable
         currentHealth--;
         lastDamageTime = Time.time;
         isInvincible = true;
-        
+
+        updateHealthEvent.onEventRaised.Invoke(currentHealth);
+
         Debug.Log($"Player took damage! Health: {currentHealth}/{maxHealth}");
         
         if (currentHealth <= 0)

@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7206028897164858491}
   - component: {fileID: 2015801734820803013}
-  - component: {fileID: 457027718649899316}
   - component: {fileID: 3534027698401537674}
+  - component: {fileID: 3734671091517587502}
   m_Layer: 0
   m_Name: Explosion
   m_TagString: Untagged
@@ -55,19 +55,6 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 2
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &457027718649899316
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7589772742670703100}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5873de30015cd274bb5e9d727524d7c5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DamageComponent
-  damage: 1000
 --- !u!114 &3534027698401537674
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -81,3 +68,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PerishableObject
   despawnTime: 0.5
+--- !u!114 &3734671091517587502
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7589772742670703100}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40cca643715550445a38ca0841496eff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Explosion

@@ -7,6 +7,10 @@ public class Enemy : MonoBehaviour, IDamageable
     [SerializeField] private int startingHealth;
     [SerializeField] private float damageMult;
 
+    [Header("Spawn Settings")]
+    [SerializeField] private float spawnDistance;
+    [SerializeField] private float invincibleTimeAfterSpawn;
+
     [Header("Move Settings")]
     [SerializeField] private float stoppingDistanceToTarget;
 
@@ -16,9 +20,14 @@ public class Enemy : MonoBehaviour, IDamageable
     [SerializeField] private float attackRate;
     [SerializeField] private float bulletSpeed;
     [SerializeField] private int bulletDamage;
+    [SerializeField] private float attackRotationMax;
 
     [Header("Death Settings")]
     [SerializeField] private float despawnTime;
+
+    [Header("Components")]
+    [SerializeField] private Collider baseCollider;
+    [SerializeField] private Rigidbody[] rigRigidbodies;
 
     [Header("Broadcast Events")]
     [SerializeField] private VoidEventSO deathEventSO;
@@ -32,6 +41,7 @@ public class Enemy : MonoBehaviour, IDamageable
     private int bulletDamageMultiplier;
     private float attackTimer;
     private float despawnTimer;
+    private float invincibleTimer;
     private Transform currentTarget;
     [SerializeField] private Transform goalTarget; // SerializeField is just for testing
     private Animator anim;
@@ -39,7 +49,6 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private const string ANIM_PARAM_MOVING = "IsMoving";
     private const string ANIM_PARAM_ATTACKING = "IsShooting";
-    private const float GUN_BARREL_ROTATION_LIMIT = 15f;
 
     public int Health { get => health; set => health = value; }
 
@@ -62,15 +71,15 @@ public class Enemy : MonoBehaviour, IDamageable
         unfreezeEventSO.onEventRaised -= Unfreeze;
     }
 
-    private void Start()
-    {
-        currentTarget = goalTarget; // For Testing
-        health = startingHealth;
-        ChangeState(State.Moving); // Change to Frozen
-    }
+    //private void Start()
+    //{
+    //    Init(goalTarget, 1); // For Testing Only
+    //}
 
     private void Update()
     {
+        HandleInvincibility();
+
         switch (state)
         {
             case State.Frozen:
@@ -90,15 +99,31 @@ public class Enemy : MonoBehaviour, IDamageable
     #endregion
 
     #region Init
-    public void Init(Transform goalTransform, int bulletDamageMult)
+    public void Init(Transform goalTransform, int bulletDamageMult, int startHealth = -1)
     {
-        goalTarget = goalTransform;
-        NavMesh.SamplePosition(Vector2.zero, out NavMeshHit hit, 500f, NavMesh.AllAreas);
-        navAgent.Warp(hit.position);
-
+        currentTarget = goalTarget = goalTransform;
         bulletDamageMultiplier = bulletDamageMult;
 
-        ChangeState(State.Moving);
+        if (startHealth > 0) health = startHealth;
+        else health = startingHealth;
+        invincibleTimer = invincibleTimeAfterSpawn;
+
+        SetRagdollParts();
+
+        Vector3 spawnPos = transform.position + Random.insideUnitSphere * spawnDistance;
+        NavMesh.SamplePosition(spawnPos, out NavMeshHit hit, 500f, NavMesh.AllAreas);
+        navAgent.Warp(hit.position);
+
+        ChangeState(State.Frozen); // Change to Frozen; Moving for testing only
+    }
+
+    private void SetRagdollParts()
+    {
+        EnemyRagdollPart[] ragdollParts = GetComponentsInChildren<EnemyRagdollPart>();
+        foreach (EnemyRagdollPart part in ragdollParts)
+        {
+            part.DamageMult = damageMult;
+        }
     }
     #endregion
 
@@ -108,6 +133,8 @@ public class Enemy : MonoBehaviour, IDamageable
         switch (state)
         {
             case State.Frozen:
+                SetRagdollKinematic(false);
+                anim.speed = 1;
                 break;
             case State.Moving:
                 navAgent.isStopped = true;
@@ -125,6 +152,8 @@ public class Enemy : MonoBehaviour, IDamageable
         switch (state)
         {
             case State.Frozen:
+                SetRagdollKinematic(true);
+                anim.speed = 0;
                 break;
             case State.Moving:
                 navAgent.isStopped = false;
@@ -135,11 +164,23 @@ public class Enemy : MonoBehaviour, IDamageable
                 anim.SetBool(ANIM_PARAM_ATTACKING, true);
                 break;
             case State.Dead:
-                navAgent.isStopped = true;
                 navAgent.enabled = false;
                 anim.enabled = false;
+                baseCollider.enabled = false;
                 despawnTimer = despawnTime;
+                deathEventSO.RaiseEvent(); 
+                //SetRagdollRigidbodies(true);
                 break;
+        }
+    }
+    #endregion
+
+    #region Invincibility
+    private void HandleInvincibility()
+    {
+        if (invincibleTimer > 0)
+        {
+            invincibleTimer -= Time.deltaTime;
         }
     }
     #endregion
@@ -152,7 +193,8 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private void Unfreeze()
     {
-        ChangeState(State.Moving);
+        if (health > 0) ChangeState(State.Moving);
+        else ChangeState(State.Dead);
     }
     #endregion
 
@@ -211,22 +253,48 @@ public class Enemy : MonoBehaviour, IDamageable
         if (hitRigidbody != null)
         {
             if (hitRigidbody.transform.IsChildOf(transform)) return;
+            if (invincibleTimer > 0 && hitRigidbody.GetComponentInParent<Enemy>()) return;
 
+            int damage;
             if (!hitRigidbody.TryGetComponent(out DamageComponent dmgComponent))
             {
-                int damage = Mathf.RoundToInt(hitRigidbody.linearVelocity.magnitude * damageMult);
-                Hit(damage);
-                return;
+                damage = Mathf.RoundToInt(hitRigidbody.linearVelocity.magnitude * damageMult);
             }
-            
+            else damage = dmgComponent.Damage;
+
+            Hit(damage);
+            return;
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.GetComponentInParent<PlayerController>())
+        {
+            currentTarget = other.transform;
+            return;
+        }
+
+        if (other.TryGetComponent(out DamageComponent dmgComponent))
+        {
+            if (invincibleTimer > 0) return;
+
             Hit(dmgComponent.Damage);
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.GetComponentInParent<PlayerController>())
+        {
+            currentTarget = goalTarget;
             return;
         }
     }
 
     public void Hit(int damage)
     {
-        if (state == State.Dead) return;
+        if (state == State.Dead || state == State.Frozen) return;
 
         health -= damage;
 
@@ -234,6 +302,13 @@ public class Enemy : MonoBehaviour, IDamageable
         {
             Die();
         }
+    }
+
+    public void HitFromPart(int damage)
+    {
+        if (invincibleTimer > 0) return;
+
+        Hit(damage);
     }
     #endregion
 
@@ -255,27 +330,12 @@ public class Enemy : MonoBehaviour, IDamageable
     }
     #endregion
 
-    #region Player Detection
-    private void OnTriggerEnter(Collider other)
+    #region Ragdoll
+    private void SetRagdollKinematic(bool value)
     {
-        if (other.GetComponentInParent<PlayerController>())
+        foreach (Rigidbody rb in rigRigidbodies)
         {
-            currentTarget = other.transform;
-            return;
-        }
-
-        if (other.TryGetComponent(out DamageComponent dmgComponent))
-        {
-            Hit(dmgComponent.Damage);
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.GetComponentInParent<PlayerController>())
-        {
-            currentTarget = goalTarget;
-            return;
+            rb.isKinematic = value;
         }
     }
     #endregion
@@ -307,9 +367,9 @@ public class Enemy : MonoBehaviour, IDamageable
         Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);
         float angleToTarget = Vector3.Angle(transform.forward, directionToTarget);
 
-        if (angleToTarget > GUN_BARREL_ROTATION_LIMIT)
+        if (angleToTarget > attackRotationMax)
         {
-            targetRotation = Quaternion.RotateTowards(Quaternion.LookRotation(transform.forward), Quaternion.LookRotation(directionToTarget), GUN_BARREL_ROTATION_LIMIT);
+            targetRotation = Quaternion.RotateTowards(Quaternion.LookRotation(transform.forward), Quaternion.LookRotation(directionToTarget), attackRotationMax);
         }
 
         bulletSpawnPoint.rotation = targetRotation;
