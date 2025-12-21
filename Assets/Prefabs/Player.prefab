@@ -89,7 +89,7 @@ MonoBehaviour:
   airControlMultiplier: 0.5
   cameraHolder: {fileID: 3891524232891504122}
   mouseSensitivity: 10
-  pickupForce: 15
+  pickupForce: 100
   forceMultiplier: 30
   pickupLayerMask:
     serializedVersion: 2
