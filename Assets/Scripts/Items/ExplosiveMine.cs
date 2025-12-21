@@ -1,17 +1,10 @@
 using UnityEngine;
 
-public class BearTrap : DraggableItem
+public class ExplosiveMine : ExplosiveBarrel
 {
-    Animator anim;
     bool triggered = false;
 
-    [SerializeField] Collider bearTrapTrigger;
-
-    protected override void Awake()
-    {
-        base.Awake();
-        anim = GetComponent<Animator>();
-    }
+    [SerializeField] Collider trapTrigger;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -21,9 +14,7 @@ public class BearTrap : DraggableItem
         {
             triggered = true;
 
-            anim.SetTrigger("TriggerTrap");
-            IDamageable damageable = other.GetComponent<IDamageable>();
-            damageable?.Hit(2);
+            Die();
         }
     }
 
@@ -31,7 +22,7 @@ public class BearTrap : DraggableItem
     {
         if (currentState == DraggableState.shattered) return;
 
-        bearTrapTrigger.enabled = false;
+        trapTrigger.enabled = false;
 
         base.Die();
     }

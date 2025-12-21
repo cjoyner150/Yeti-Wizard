@@ -329,7 +329,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSpawner
   ItemPrefabs:
-  - {fileID: 3590344039021787453, guid: d88ea33df5f342b4abd8f0063e006f11, type: 3}
+  - {fileID: 4448944518622300713, guid: f6f0a051ac860ae4c864ed826de9e329, type: 3}
   - {fileID: 3590344039021787453, guid: 252c51a30453b844aa0e0920fdfb67bb, type: 3}
   ItemSpawnLocations:
   - {fileID: 199452455}
