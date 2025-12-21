@@ -139,15 +139,15 @@ MonoBehaviour:
   startingHealth: 2
   damageMult: 1
   damageVelocityThreshold: 10
-  spawnDistance: 100
+  spawnDistance: 10
   invincibleTimeAfterSpawn: 3
   stoppingDistanceToTarget: 4
   bulletSpawnPoint: {fileID: 8627735067651917250}
   bulletPrefab: {fileID: 6236664591292791679, guid: cca0af09f20534844a27d842d534362b, type: 3}
   attackRate: 2
-  bulletSpeed: 5
+  bulletSpeed: 50
   bulletDamage: 2
-  attackRotationMax: 15
+  attackRotationMax: 2
   despawnTime: 5
   baseCollider: {fileID: 3250287736938534794}
   rigRigidbodies:
