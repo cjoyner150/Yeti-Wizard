@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class HealthBar : MonoBehaviour
@@ -35,5 +36,10 @@ public class HealthBar : MonoBehaviour
     private void UpdateHealth(int value)
     {
         slider.value = value;
+
+        if (value <= 0)
+        {
+            SceneManager.LoadScene("LoseScreen");
+        }
     }
 }
