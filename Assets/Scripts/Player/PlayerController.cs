@@ -28,6 +28,9 @@ public class PlayerController : MonoBehaviour, IDamageable
     public float maxHoldDistance = 6f;
     public float pickupRange = 6f;
     public float maxHoldDistanceFromCamera = 8f;
+    public GameObject lineStart;
+    public GameObject lineEnd;
+    public LineRenderer Beam;
 
     [Header("Weight System")]
     public float minMoveSpeed = 2f;
@@ -232,6 +235,10 @@ public class PlayerController : MonoBehaviour, IDamageable
         {
             ThrowObject();
         }
+        if (heldObject)
+        {
+            SetLazerPoints();
+        }
     }
 
     Rigidbody GetRigidbodyFromHit(Collider collider)
@@ -267,7 +274,10 @@ public class PlayerController : MonoBehaviour, IDamageable
                 heldObjectRB.linearDamping = 10f;
                 heldObjectRB.angularDamping = 5f;
                 currentHoldDistance = Vector3.Distance(cameraHolder.position, heldObjectRB.position);
-                
+
+                Beam.enabled = true;
+                heldObject.SetPickupVFX(true);
+
                 if (pickupSound != null && audioSource != null)
                 {
                     audioSource.PlayOneShot(pickupSound);
@@ -289,6 +299,8 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         if (heldObjectRB == null) return;
 
+        heldObject.SetPickupVFX(false);
+
         heldObject.DropItem();
 
         heldObjectRB.linearDamping = 0f;
@@ -296,7 +308,10 @@ public class PlayerController : MonoBehaviour, IDamageable
         heldObjectMass = 0f;
         heldObjectRB = null;
         heldObject = null;
+
+        Beam.enabled = false;
         
+
         Debug.Log("Dropped object");
     }
 
@@ -382,6 +397,16 @@ public class PlayerController : MonoBehaviour, IDamageable
             currentHoldDistance += scroll * massAdjustedScrollSpeed * Time.deltaTime * 10f;
             currentHoldDistance = Mathf.Clamp(currentHoldDistance, minHoldDistance, maxHoldDistance);
         }
+    }
+
+    void SetLazerPoints()
+    {
+        if (heldObject)
+        {
+            lineEnd.transform.position = heldObject.transform.position;
+        }
+        
+         
     }
 
     #endregion

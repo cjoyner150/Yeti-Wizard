@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9123346507711186956}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Explosion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 6589128825666176971}
   - component: {fileID: 1192566402911996118}
   - component: {fileID: 7011242888516408191}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Vertical
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4956,7 +4956,7 @@ GameObject:
   - component: {fileID: 6392295316051952698}
   - component: {fileID: 5676657227123183701}
   - component: {fileID: 712607889300745803}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Horizontal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
