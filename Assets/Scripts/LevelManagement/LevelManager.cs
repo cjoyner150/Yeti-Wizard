@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Playables;
 
@@ -31,6 +32,13 @@ public class LevelManager: MonoBehaviour
     [SerializeField] VoidEventSO unfreezeEvent;
     [SerializeField] VoidEventSO onWaveComplete;
     [SerializeField] VoidEventSO onEnemyDied;
+
+    [Header("Music")]
+    [SerializeField] AudioSource source;
+    [SerializeField] AudioClip prepLoop01;
+    [SerializeField] AudioClip prepLoop02;
+    [SerializeField] AudioClip prepLoop03;
+    [SerializeField] AudioClip combatLoop;
 
     float prepTimer;
     bool frozen = true;
@@ -145,7 +153,14 @@ public class LevelManager: MonoBehaviour
         freezeEvent.onEventRaised?.Invoke();
         frozen = true;
         tsv.setTimeStop(true);
+
+        //StartCoroutine(MusicPrep());
     }
+
+    //IEnumerator MusicPrep()
+    //{
+    //    source.PlayOneShot();
+    //}
 
     private void Unfreeze()
     {
@@ -162,5 +177,10 @@ public class LevelManager: MonoBehaviour
         {
             onWaveComplete.onEventRaised?.Invoke();
         }
+    }
+
+    public int GetWave()
+    {
+        return currentConfig.waveNumber;
     }
 }
