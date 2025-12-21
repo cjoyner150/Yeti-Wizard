@@ -64,6 +64,9 @@ public class PlayerController : MonoBehaviour, IDamageable
     [Header("Pickup & Throw")]
     public float throwForce = 15f;
     [SerializeField] LayerMask blocksHolding;
+
+    [Header("Body")]
+    [SerializeField] private Transform body;
     
     [Header("Visual Feedback")]
     public AudioClip pickupSound;
@@ -89,6 +92,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     private Rigidbody rb;
     private Rigidbody heldObjectRB;
     private DraggableItem heldObject;
+    private Animator bodyAnim;
     private float xRotation;
     float yRotation;
     private float currentMoveSpeed;
@@ -133,6 +137,8 @@ public class PlayerController : MonoBehaviour, IDamageable
         fire = inputControls.Player.Fire;
 
         cam = Camera.main;
+
+        bodyAnim = body.GetComponentInChildren<Animator>();
     }
 
     void Start()
@@ -152,6 +158,9 @@ public class PlayerController : MonoBehaviour, IDamageable
             audioSource = gameObject.AddComponent<AudioSource>();
         }
 
+        body.SetParent(cam.transform, true);
+        body.localPosition = new(0.005f, -1.6f, -0.255f);
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -163,6 +172,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         
         HandlePickupInput();
         HandleGunRotate();
+        HandleBodyRotate();
 
         if (shootOnCD)
         {
@@ -219,6 +229,9 @@ public class PlayerController : MonoBehaviour, IDamageable
             targetVelocity - new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
 
         rb.AddForce(velocityChange, ForceMode.VelocityChange);
+
+        if (moveDir == Vector3.zero) bodyAnim.SetBool("IsMoving", false);
+        else bodyAnim.SetBool("IsMoving", true);
     }
 
     void CalculateCurrentSpeed()
@@ -264,6 +277,20 @@ public class PlayerController : MonoBehaviour, IDamageable
 
         orientation.localRotation = Quaternion.Euler(xRotation, yRotation, 0f);
         mesh.transform.localRotation = Quaternion.Euler(0, orientation.localRotation.eulerAngles.y, 0);
+    }
+
+    void HandleBodyRotate()
+    {
+        //Physics.Raycast(cam.transform.position, cam.transform.forward, out RaycastHit hit, 50, shootableLayers);
+
+        //if (hit.collider != null)
+        //{
+        //    body.forward = Vector3.Slerp(body.forward, (hit.point - body.position).normalized, Time.deltaTime * 5);
+        //}
+        //else
+        //{
+        //    body.forward = Vector3.Slerp(body.forward, (cam.transform.position + (cam.transform.forward * 50)) - body.position, Time.deltaTime * 5);
+        //}
     }
 
     #endregion
@@ -333,6 +360,8 @@ public class PlayerController : MonoBehaviour, IDamageable
                 Beam1.enabled = true;
                 Beam2.enabled = true;
                 heldObject.SetPickupVFX(true);
+
+                bodyAnim.SetTrigger("Staff");
 
                 if (pickupSound != null && audioSource != null)
                 {
@@ -476,6 +505,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         bullet.Init(1, bulletSpeed);
         bullet.Launch();
         if (gunshotSFXPlayer != null) gunshotSFXPlayer.Play();
+        bodyAnim.SetTrigger("Shoot");
 
         shootTimer = shootCooldown;
     }
