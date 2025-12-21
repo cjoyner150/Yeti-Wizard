@@ -110,6 +110,8 @@ public class PlayerController : MonoBehaviour, IDamageable
     private LevelManager levelManager;
     private float heldObjectMass = 0f;
 
+    bool canInput = false;
+
     #endregion
 
     #region Unity Methods
@@ -140,8 +142,12 @@ public class PlayerController : MonoBehaviour, IDamageable
         cam = Camera.main;
     }
 
+    void AllowInput() => canInput = true; 
+
     void Start()
     {
+        Invoke(nameof(AllowInput), 8f);
+
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
 
@@ -163,6 +169,8 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     void Update()
     {
+        if (!canInput) return;
+
         HandleMouseLook();
         HandleJump();
         
