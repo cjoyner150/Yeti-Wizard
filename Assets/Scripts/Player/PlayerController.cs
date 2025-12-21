@@ -355,13 +355,8 @@ public class PlayerController : MonoBehaviour, IDamageable
         {
             audioSource.PlayOneShot(throwSound);
         }
-        
-        heldObjectRB.useGravity = true;
-        heldObjectRB.linearDamping = 0f;
-        heldObjectRB.angularDamping = 0.05f;
-        heldObjectMass = 0f;
-        heldObjectRB = null;
-        heldObject = null;
+
+        DropObject();
         
         Debug.Log($"Threw object with force: {massAdjustedForce:F1}");
     }

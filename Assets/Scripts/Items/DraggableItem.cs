@@ -6,7 +6,7 @@ public class DraggableItem : MonoBehaviour, IDamageable
     [SerializeField] protected Collider[] shatterColliders;
     [SerializeField] protected Transform shatterExplosionPoint;
     [SerializeField] protected bool isDestructible;
-    [SerializeField] protected float velocityThreshold = 10;
+    [SerializeField] protected float impulseDamageThreshold = 10;
     [SerializeField] protected float yOffset = 0;
     [SerializeField] protected int maxHP = 1;
     [SerializeField] protected VoidEventSO freezeEvent;
@@ -48,9 +48,12 @@ public class DraggableItem : MonoBehaviour, IDamageable
         rb = GetComponent<Rigidbody>();
         col = GetComponent<Collider>();
 
-        foreach (var collider in shatterColliders)
+        if (isDestructible)
         {
-            collider.enabled = false;
+            foreach (var collider in shatterColliders)
+            {
+                collider.enabled = false;
+            }
         }
 
         Health = maxHP;
@@ -203,7 +206,7 @@ public class DraggableItem : MonoBehaviour, IDamageable
 
     protected virtual void OnCollisionEnter(Collision collision)
     {
-        if (collision.relativeVelocity.magnitude > velocityThreshold)
+        if (collision.impulse.magnitude > impulseDamageThreshold && !frozen)
         {
             Hit(1);
         }
