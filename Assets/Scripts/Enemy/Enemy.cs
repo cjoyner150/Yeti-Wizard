@@ -263,6 +263,11 @@ public class Enemy : MonoBehaviour, IDamageable
             currentTarget = other.transform;
             return;
         }
+
+        if (other.TryGetComponent(out DamageComponent dmgComponent))
+        {
+            Hit(dmgComponent.Damage);
+        }
     }
 
     private void OnTriggerExit(Collider other)
