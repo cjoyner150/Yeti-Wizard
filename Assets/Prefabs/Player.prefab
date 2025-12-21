@@ -140,7 +140,8 @@ MonoBehaviour:
   maxHoldDistanceFromCamera: 8
   lineStart: {fileID: 3660190418396783738}
   lineEnd: {fileID: 202469334110438269}
-  Beam: {fileID: 1683819726483917829}
+  Beam1: {fileID: 1683819726483917829}
+  Beam2: {fileID: 8700645336453416588}
   minMoveSpeed: 2
   massSlowdownMultiplier: 2
   heavyThreshold: 10
@@ -681,5 +682,10 @@ LineRenderer:
 --- !u!1 &3660190418396783738 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7166126584903573095, guid: b6fb42d6769d84146959263ba16a9826, type: 3}
+  m_PrefabInstance: {fileID: 5888643302097238557}
+  m_PrefabAsset: {fileID: 0}
+--- !u!120 &8700645336453416588 stripped
+LineRenderer:
+  m_CorrespondingSourceObject: {fileID: 2956137305834405009, guid: b6fb42d6769d84146959263ba16a9826, type: 3}
   m_PrefabInstance: {fileID: 5888643302097238557}
   m_PrefabAsset: {fileID: 0}
