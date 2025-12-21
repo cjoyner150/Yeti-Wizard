@@ -137,7 +137,7 @@ Transform:
   m_GameObject: {fileID: 7035220919873584991}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.44, y: 12.407, z: 4.294}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -376,7 +376,7 @@ LineRenderer:
     colorGradient:
       serializedVersion: 2
       key0: {r: 1, g: 0.43921566, b: 0.865521, a: 1}
-      key1: {r: 1, g: 0.52374935, b: 0.7935854, a: 1}
+      key1: {r: 1, g: 0.43921566, b: 0.865521, a: 1}
       key2: {r: 1, g: 0.9408104, b: 0.43867922, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
@@ -384,8 +384,8 @@ LineRenderer:
       key6: {r: 0, g: 0, b: 0, a: 0}
       key7: {r: 0, g: 0, b: 0, a: 0}
       ctime0: 677
-      ctime1: 15808
-      ctime2: 65535
+      ctime1: 6955
+      ctime2: 16531
       ctime3: 0
       ctime4: 0
       ctime5: 0
@@ -5380,7 +5380,7 @@ LineRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0.49268177, g: 0.43921566, b: 1, a: 1}
+      key0: {r: 0.9664679, g: 0.5254902, b: 1, a: 1}
       key1: {r: 1, g: 0.85847145, b: 0.5254902, a: 1}
       key2: {r: 0.43921566, g: 1, b: 0.517248, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
@@ -5388,8 +5388,8 @@ LineRenderer:
       key5: {r: 0, g: 0, b: 0, a: 0}
       key6: {r: 0, g: 0, b: 0, a: 0}
       key7: {r: 0, g: 0, b: 0, a: 0}
-      ctime0: 677
-      ctime1: 15808
+      ctime0: 12646
+      ctime1: 20279
       ctime2: 65535
       ctime3: 0
       ctime4: 0
@@ -5406,7 +5406,7 @@ LineRenderer:
       atime7: 0
       m_Mode: 0
       m_ColorSpace: 0
-      m_NumColorKeys: 3
+      m_NumColorKeys: 2
       m_NumAlphaKeys: 2
     numCornerVertices: 3
     numCapVertices: 0
