@@ -119,11 +119,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!4 &154358648 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6623445426221828477, guid: 8fb6fb4ba9c92fe4d8e8a53428428df5, type: 3}
-  m_PrefabInstance: {fileID: 919016335}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &292776077
 GameObject:
   m_ObjectHideFlags: 0
@@ -154,7 +149,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1774170299}
-  - {fileID: 154358648}
+  - {fileID: 6623445427073342194}
   - {fileID: 300707187}
   - {fileID: 659858032}
   m_Father: {fileID: 0}
@@ -623,7 +618,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4448944518622300713, guid: e0a26c7f855797447a93dc8d7af01425, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8236301049625567290, guid: e0a26c7f855797447a93dc8d7af01425, type: 3}
       propertyPath: m_LocalPosition.x
@@ -757,10 +752,6 @@ PrefabInstance:
       propertyPath: goalTarget
       value: 
       objectReference: {fileID: 659858032}
-    - target: {fileID: 7461239800341209755, guid: 8fb6fb4ba9c92fe4d8e8a53428428df5, type: 3}
-      propertyPath: spawnDistance
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1078,7 +1069,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
+  m_VoxelSize: 0.13333334
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: e224351b4177bb7488e36b6af512b699, type: 2}
   m_BuildHeightMesh: 0
@@ -1145,7 +1136,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
+  m_VoxelSize: 0.13333334
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: 66fc2e72e27db704a9ca7eb0d09f5e7c, type: 2}
   m_BuildHeightMesh: 0
@@ -1446,6 +1437,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e0a26c7f855797447a93dc8d7af01425, type: 3}
+--- !u!4 &6623445427073342194 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6623445426221828477, guid: 8fb6fb4ba9c92fe4d8e8a53428428df5, type: 3}
+  m_PrefabInstance: {fileID: 919016335}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
