@@ -276,6 +276,7 @@ public class PlayerController : MonoBehaviour, IDamageable
                 currentHoldDistance = Vector3.Distance(cameraHolder.position, heldObjectRB.position);
 
                 Beam.enabled = true;
+                heldObject.SetPickupVFX(true);
 
                 if (pickupSound != null && audioSource != null)
                 {
@@ -298,6 +299,8 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         if (heldObjectRB == null) return;
 
+        heldObject.SetPickupVFX(false);
+
         heldObject.DropItem();
 
         heldObjectRB.linearDamping = 0f;
@@ -307,6 +310,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         heldObject = null;
 
         Beam.enabled = false;
+        
 
         Debug.Log("Dropped object");
     }

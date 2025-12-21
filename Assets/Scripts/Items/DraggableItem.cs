@@ -11,6 +11,10 @@ public class DraggableItem : MonoBehaviour, IDamageable
     [SerializeField] protected int maxHP = 1;
     [SerializeField] protected VoidEventSO freezeEvent;
     [SerializeField] protected VoidEventSO unfreezeEvent;
+    [SerializeField] GameObject lightningPrefab;
+
+    GameObject lightningParticle;
+    
 
     protected Rigidbody rb;
     protected Collider col;
@@ -157,6 +161,30 @@ public class DraggableItem : MonoBehaviour, IDamageable
 
 
     }
+
+    public void SetPickupVFX(bool isOn)
+    {
+        float str = isOn ? 2f : 0f;
+
+        foreach (Collider child in shatterColliders)
+        {
+            Renderer rend = child.gameObject.GetComponent<Renderer>();
+            if (rend != null)
+            {
+                rend.material.SetFloat("_Highlight_Strength", str);
+            }
+        }
+
+        if (isOn)
+        {
+            lightningParticle = Instantiate(lightningPrefab, transform.position, Quaternion.identity, transform);
+        }
+        else
+        {
+            Destroy(lightningParticle);
+        }
+    }
+
 
     IEnumerator AddExplosionForceToBody(Rigidbody body)
     {
