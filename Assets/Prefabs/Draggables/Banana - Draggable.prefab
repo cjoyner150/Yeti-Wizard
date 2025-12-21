@@ -51,12 +51,17 @@ MonoBehaviour:
   shatterColliders:
   - {fileID: 258343808728437621}
   shatterExplosionPoint: {fileID: 0}
+  shatterExplosionForce: 0
+  shatterExplosionRange: 0
   isDestructible: 0
-  velocityThreshold: 20
+  impulseDamageThreshold: 10
   yOffset: 0.5
   maxHP: 1
   freezeEvent: {fileID: 11400000, guid: bdceff51fbc343b4f918e05d335a5c41, type: 2}
   unfreezeEvent: {fileID: 11400000, guid: e99c13a2911bf9845a6a39b17334ee93, type: 2}
+  lightningPrefab: {fileID: 0}
+  destroyedSFXPlayer: {fileID: 0}
+  shatterParticlePrefab: {fileID: 200842913867722539, guid: 22ba5756973b8b249b82ade45df89023, type: 3}
   currentState: 0
 --- !u!54 &2197644372053239231
 Rigidbody:

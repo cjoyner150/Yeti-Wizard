@@ -4071,8 +4071,8 @@
     "m_ObjectId": "6a89df06eddd4ff181e8f9eb78ef09d0",
     "m_Title": "Snow",
     "m_Position": {
-        "x": -7261.0,
-        "y": 208.0
+        "x": -7260.99951171875,
+        "y": 207.99998474121095
     }
 }
 
@@ -4171,7 +4171,7 @@
     "m_ObjectId": "6f6aa23e1d0e4e40b953d1e433f3c215",
     "m_Title": "Highlight",
     "m_Position": {
-        "x": -1421.0,
+        "x": -1420.99951171875,
         "y": 1575.0
     }
 }
@@ -4214,7 +4214,7 @@
     "m_ZTestMode": 4,
     "m_ZWriteControl": 0,
     "m_AlphaMode": 0,
-    "m_RenderFace": 2,
+    "m_RenderFace": 0,
     "m_AlphaClip": false,
     "m_CastShadows": true,
     "m_ReceiveShadows": true,

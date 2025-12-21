@@ -488,6 +488,8 @@ MonoBehaviour:
   freezeEvent: {fileID: 11400000, guid: bdceff51fbc343b4f918e05d335a5c41, type: 2}
   unfreezeEvent: {fileID: 11400000, guid: e99c13a2911bf9845a6a39b17334ee93, type: 2}
   lightningPrefab: {fileID: 5117682083495086176, guid: 1dc0cd1dd9eeb59419b3a2dbf49a85b1, type: 3}
+  destroyedSFXPlayer: {fileID: 0}
+  shatterParticlePrefab: {fileID: 200842913867722539, guid: 22ba5756973b8b249b82ade45df89023, type: 3}
   currentState: 0
   turretHead: {fileID: 620868042346450124}
   turnSpeed: 2
