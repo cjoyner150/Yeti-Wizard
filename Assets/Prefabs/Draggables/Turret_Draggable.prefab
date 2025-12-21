@@ -479,6 +479,8 @@ MonoBehaviour:
   - {fileID: 3459329525498940043}
   - {fileID: 3390179861083689392}
   shatterExplosionPoint: {fileID: 2050814013631132406}
+  explosionForce: 10
+  explosionRange: 3
   isDestructible: 1
   impulseDamageThreshold: 15
   yOffset: 0

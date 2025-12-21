@@ -24,13 +24,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2201679888480974045}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: -1.41, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1857129496203504785}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &3369820476496605818
 GameObject:
   m_ObjectHideFlags: 0
@@ -121,13 +121,14 @@ MonoBehaviour:
   airControlMultiplier: 0.5
   cameraHolder: {fileID: 3891524232891504122}
   mouseSensitivity: 10
-  bulletPrefab: {fileID: 3852671534667916868, guid: cca0af09f20534844a27d842d534362b, type: 3}
+  bulletPrefab: {fileID: 3852671534667916868, guid: e5ff53d5b349e4e4e8246bca02b19b46, type: 3}
   gun: {fileID: 6147037678426479650}
   bulletSpawnLoc: {fileID: 897749093582603370}
-  bulletSpeed: 20
+  bulletSpeed: 100
   shootableLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 65
+  shootCooldown: 0.5
   pickupForce: 100
   forceMultiplier: 30
   pickupLayerMask:
@@ -135,8 +136,8 @@ MonoBehaviour:
     m_Bits: 64
   scrollSpeed: 2
   minHoldDistance: 1.5
-  maxHoldDistance: 6
-  pickupRange: 6
+  maxHoldDistance: 12
+  pickupRange: 10
   maxHoldDistanceFromCamera: 8
   lineStart: {fileID: 3660190418396783738}
   lineEnd: {fileID: 202469334110438269}
@@ -149,6 +150,9 @@ MonoBehaviour:
   damageThreshold: 15
   invincibilityTime: 1
   throwForce: 15
+  blocksHolding:
+    serializedVersion: 2
+    m_Bits: 65
   pickupSound: {fileID: 0}
   throwSound: {fileID: 0}
   freezeEvent: {fileID: 11400000, guid: bdceff51fbc343b4f918e05d335a5c41, type: 2}
@@ -289,7 +293,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: -0.373, z: -0}
-  m_LocalScale: {x: 0.38128003, y: 0.38128, z: 0.38128}
+  m_LocalScale: {x: 0.27343497, y: 0.40949616, z: 0.27343494}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 897749093582603370}
@@ -399,14 +403,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5857761397631020303}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1857129496203504785}
   m_Father: {fileID: 6147037678426479650}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!1 &8332959297328143170
 GameObject:
   m_ObjectHideFlags: 0
@@ -431,14 +435,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8332959297328143170}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.70351934, y: -0, z: -0, w: 0.7106762}
-  m_LocalPosition: {x: 0.533, y: 0.709, z: 0.371}
-  m_LocalScale: {x: 0.81438, y: 1.2016158, z: 0.81438}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.5329895, y: 0.709, z: 0.3710022}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8474293439523768934}
   m_Father: {fileID: 2354147321660520816}
-  m_LocalEulerAnglesHint: {x: -89.421, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8442097341423252864
 GameObject:
   m_ObjectHideFlags: 0

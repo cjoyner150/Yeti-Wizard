@@ -5,6 +5,8 @@ public class DraggableItem : MonoBehaviour, IDamageable
 {
     [SerializeField] protected Collider[] shatterColliders;
     [SerializeField] protected Transform shatterExplosionPoint;
+    [SerializeField] protected float explosionForce;
+    [SerializeField] protected float explosionRange;
     [SerializeField] protected bool isDestructible;
     [SerializeField] protected float impulseDamageThreshold = 10;
     [SerializeField] protected float yOffset = 0;
@@ -88,7 +90,7 @@ public class DraggableItem : MonoBehaviour, IDamageable
 
     void TryFreezeItem()
     {
-        Debug.Log($"{name} recieved freeze event");
+        //Debug.Log($"{name} recieved freeze event");
 
         if (currentState == DraggableState.unfrozen)
         {
@@ -99,7 +101,7 @@ public class DraggableItem : MonoBehaviour, IDamageable
 
     void TryUnfreezeItem()
     {
-        Debug.Log($"{name} recieved unfreeze event");
+        //Debug.Log($"{name} recieved unfreeze event");
 
         if (currentState == DraggableState.frozen)
         {
@@ -149,13 +151,15 @@ public class DraggableItem : MonoBehaviour, IDamageable
 
                 rigidBody.isKinematic = false;
                 rigidBody.useGravity = true;
+                rigidBody.interpolation = RigidbodyInterpolation.Interpolate;
+                rigidBody.collisionDetectionMode = CollisionDetectionMode.Continuous;
 
-                //StartCoroutine(AddExplosionForceToBody(rigidBody));
+                rigidBody.AddExplosionForce(explosionForce, shatterExplosionPoint.position, explosionRange);
             }
 
             currentState = DraggableState.shattered;
 
-            Debug.Log($"{name} has died");
+            //Debug.Log($"{name} has died");
         }
         else
         {
@@ -186,13 +190,6 @@ public class DraggableItem : MonoBehaviour, IDamageable
         {
             Destroy(lightningParticle);
         }
-    }
-
-
-    IEnumerator AddExplosionForceToBody(Rigidbody body)
-    {
-        yield return new WaitForSeconds(.5f);
-        body.AddExplosionForce(1f, shatterExplosionPoint.position, 3f);
     }
 
     public virtual void Hit(int damage)

@@ -61,6 +61,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     [Header("Pickup & Throw")]
     public float throwForce = 15f;
+    [SerializeField] LayerMask blocksHolding;
     
     [Header("Visual Feedback")]
     public AudioClip pickupSound;
@@ -261,9 +262,15 @@ public class PlayerController : MonoBehaviour, IDamageable
         if (Mouse.current.rightButton.wasPressedThisFrame)
         {
             if (heldObjectRB == null)
+            {
                 TryPickup();
+                //Debug.Log("Input pickup item");
+            }
             else
+            {
                 DropObject();
+                //Debug.Log("Input drop item");
+            }
         }
         
         if (heldObjectRB != null && Mouse.current.leftButton.wasPressedThisFrame && isCombatPhase)
@@ -321,11 +328,11 @@ public class PlayerController : MonoBehaviour, IDamageable
                 
                 if (heldObjectMass >= heavyThreshold)
                 {
-                    Debug.Log($"Picked up HEAVY object: {heldObjectRB.gameObject.name} (Mass: {heldObjectMass})");
+                    //Debug.Log($"Picked up HEAVY object: {heldObjectRB.gameObject.name} (Mass: {heldObjectMass})");
                 }
                 else
                 {
-                    Debug.Log($"Picked up: {heldObjectRB.gameObject.name} (Mass: {heldObjectMass})");
+                   // Debug.Log($"Picked up: {heldObjectRB.gameObject.name} (Mass: {heldObjectMass})");
                 }
             }
         }
@@ -349,7 +356,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         Beam2.enabled = false;
 
 
-        Debug.Log("Dropped object");
+        //Debug.Log("Dropped object");
     }
 
     void CheckAutoDrop()
@@ -368,7 +375,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         Ray ray = new Ray(cameraHolder.position, (heldObjectRB.position - cameraHolder.position).normalized);
         RaycastHit hit;
         
-        if (Physics.Raycast(ray, out hit, distanceToObject))
+        if (Physics.Raycast(ray, out hit, distanceToObject, blocksHolding))
         {
             if (hit.rigidbody != heldObjectRB && !hit.collider.isTrigger)
             {
@@ -395,7 +402,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
         DropObject();
         
-        Debug.Log($"Threw object with force: {massAdjustedForce:F1}");
+        //Debug.Log($"Threw object with force: {massAdjustedForce:F1}");
     }
 
     void HandleHeldObject()
@@ -447,6 +454,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     void Shoot(InputAction.CallbackContext ctx)
     {
+        if (heldObjectRB != null) return;
         if (shootOnCD || !IsShootingMode()) return;
 
         GameObject bulletGO = Instantiate(bulletPrefab, bulletSpawnLoc.position, bulletSpawnLoc.rotation);
@@ -487,7 +495,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         gun.gameObject.SetActive(true);
 
         isCombatPhase = true;
-        Debug.Log("Player: Switched to Shooting Mode");
+        //Debug.Log("Player: Switched to Shooting Mode");
     }
 
     public void SwitchToPrepMode()
@@ -495,7 +503,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         gun.gameObject.SetActive(false);
 
         isCombatPhase = false;
-        Debug.Log("Player: Switched to Pickup Mode");
+        //Debug.Log("Player: Switched to Pickup Mode");
     }
 
     #endregion
