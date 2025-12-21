@@ -3,11 +3,14 @@ using UnityEngine;
 
 public class DraggableItem : MonoBehaviour, IDamageable
 {
+    [Header("Destructible")]
     [SerializeField] protected Collider[] shatterColliders;
     [SerializeField] protected Transform shatterExplosionPoint;
     [SerializeField] protected float explosionForce;
     [SerializeField] protected float explosionRange;
     [SerializeField] protected bool isDestructible;
+
+    [Header("Draggable")]
     [SerializeField] protected float impulseDamageThreshold = 10;
     [SerializeField] protected float yOffset = 0;
     [SerializeField] protected int maxHP = 1;
@@ -90,7 +93,7 @@ public class DraggableItem : MonoBehaviour, IDamageable
 
     void TryFreezeItem()
     {
-        //Debug.Log($"{name} recieved freeze event");
+        Debug.Log($"{name} recieved freeze event");
 
         if (currentState == DraggableState.unfrozen)
         {
@@ -101,7 +104,7 @@ public class DraggableItem : MonoBehaviour, IDamageable
 
     void TryUnfreezeItem()
     {
-        //Debug.Log($"{name} recieved unfreeze event");
+        Debug.Log($"{name} recieved unfreeze event");
 
         if (currentState == DraggableState.frozen)
         {
@@ -173,14 +176,13 @@ public class DraggableItem : MonoBehaviour, IDamageable
     {
         float str = isOn ? 2f : 0f;
 
-        foreach (Collider child in shatterColliders)
+        MeshRenderer[] renderers = GetComponentsInChildren<MeshRenderer>();
+
+        foreach (MeshRenderer renderer in renderers)
         {
-            Renderer rend = child.gameObject.GetComponent<Renderer>();
-            if (rend != null)
-            {
-                rend.material.SetFloat("_Highlight_Strength", str);
-            }
+            renderer.material.SetFloat("_Highlight_Strength", str);
         }
+           
 
         if (isOn)
         {
@@ -203,6 +205,7 @@ public class DraggableItem : MonoBehaviour, IDamageable
 
     protected virtual void OnCollisionEnter(Collision collision)
     {
+        Debug.Log($"{name} was hit with {collision.impulse.magnitude} impulse");
         if (collision.impulse.magnitude > impulseDamageThreshold && !frozen)
         {
             Hit(1);

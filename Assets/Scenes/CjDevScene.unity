@@ -1206,6 +1206,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 8657066195501640720, guid: 9b707be2e4d79d34794630f67fddc796, type: 3}
+      propertyPath: damageThreshold
+      value: 30
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1251,7 +1255,7 @@ MonoBehaviour:
   ItemSpawners:
   - {fileID: 1919360805}
   - {fileID: 349913831}
-  prepTime: 3
+  prepTime: 10
   initialConfig:
     waveNumber: 0
     enemies: 20
@@ -1535,8 +1539,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HelpfulItemSpawner
   ItemPrefabs:
-  - {fileID: 1682699590418706498, guid: 68dba7664aae6fd469a7543cd1fd154f, type: 3}
+  - {fileID: 4448944518622300713, guid: e0a26c7f855797447a93dc8d7af01425, type: 3}
   - {fileID: 1052971983493066776, guid: af80490acaeeab3418dbf8405fe30c43, type: 3}
+  - {fileID: 1682699590418706498, guid: 68dba7664aae6fd469a7543cd1fd154f, type: 3}
   ItemSpawnLocations:
   - {fileID: 2132515176}
   - {fileID: 254856047}

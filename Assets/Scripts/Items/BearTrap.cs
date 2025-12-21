@@ -15,7 +15,7 @@ public class BearTrap : DraggableItem
     {
         if (triggered || currentState == DraggableState.shattered) return;
 
-        if (other.CompareTag("Player") || other.CompareTag("Enemy"))
+        if (other.CompareTag("Player"))
         {
             triggered = true;
 

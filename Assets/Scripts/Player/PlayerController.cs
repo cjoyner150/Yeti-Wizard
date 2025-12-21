@@ -523,12 +523,12 @@ public class PlayerController : MonoBehaviour, IDamageable
 
         CheckForDamage(collision);
     }
-
+    
     void CheckForDamage(Collision collision)
     {
         if (isInvincible || currentHealth <= 0) return;
 
-        float impactForce = collision.relativeVelocity.magnitude;
+        float impactForce = collision.impulse.magnitude;
         
         if (impactForce >= damageThreshold)
         {
